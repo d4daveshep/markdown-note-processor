@@ -10,3 +10,6 @@ class Heading(StrEnum):
 class MDParser:
     def __init__(self, filepath: Path):
         pass
+
+    def find_next(self, heading: Heading) -> str:
+        return ""
