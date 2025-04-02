@@ -26,20 +26,21 @@ def test_load_nonexistent_file() -> None:
     assert "no such file" in str(err.value)
 
 
-def test_find_heading_line_numbers() -> None:
-    md_filepath: Path = Path("tests/Test Week 1.md")
-    md_parser: MDParser = MDParser(md_filepath)
-
-    h1_lines: list[int] = md_parser.heading_line_numbers(Heading.H1)
+def test_get_heading_line_numbers(week_1: MDParser) -> None:
+    h1_lines: list[int] = week_1.heading_line_numbers(Heading.H1)
     assert len(h1_lines) == 5
     assert h1_lines == [0, 6, 16, 40, 44]
 
-    h2_lines: list[int] = md_parser.heading_line_numbers(Heading.H2)
+    h2_lines: list[int] = week_1.heading_line_numbers(Heading.H2)
     assert len(h2_lines) == 8
 
 
-# def test_heading_structure(week_1: MDParser) -> None:
-# assert week_1.h1[0].
+def test_h2_lines_in_h1(week_1: MDParser) -> None:
+    assert week_1.h2_lines_in_h1(h1_index=0) == [(2, 5)]
+    assert week_1.h2_lines_in_h1(h1_index=1) == [8, 12]
+    assert week_1.h2_lines_in_h1(h1_index=2) == [18, 22, 36]
+    assert week_1.h2_lines_in_h1(h1_index=3) == []
+    assert week_1.h2_lines_in_h1(h1_index=4) == [46, 56]
 
 
 def file_weekly_notes(md_filepath: Path) -> None:
