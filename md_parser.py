@@ -1,5 +1,6 @@
 from enum import StrEnum
 from pathlib import Path
+from typing import NamedTuple
 
 
 class Heading(StrEnum):
@@ -7,12 +8,32 @@ class Heading(StrEnum):
     H2 = "## "
 
 
-class MDParser:
-    """Markdown parser to parse my weekly notes and split them into separate files.
+class LineRange(NamedTuple):
+    start: int
+    end: int
 
-    The parser does a single pass to learn the line numbers of H1 and H2 headings.  These can then be queried through property lists.
 
-    The class also provides utility methods for getting the daily date from H1 heading and getting the project name and title of H2 headings.
+class H2_Heading(NamedTuple):
+    lines: LineRange
+    project_name: str
+    title: str = ""
+
+
+class H1_Heading(NamedTuple):
+    line_num: int
+    date: str
+    h2s: list[H2_Heading]
+
+
+class NoteFileStructure(NamedTuple):
+    line_count: int
+    h1_headings: list[H1_Heading]
+
+
+class NoteFile:
+    """Note file parser to parse my weekly notes and split them into separate files.
+
+    The file is parsed to create a NoteFileStructure object which contains the structure of the file.
     """
 
     def __init__(self, filepath: Path):
@@ -21,6 +42,15 @@ class MDParser:
         with open(filepath, "r") as file:
             data: str = file.read()
             self._lines: list[str] = data.split("\n")
+
+    def analyse_structure(self) -> NoteFileStructure:
+        file_structure: NoteFileStructure = NoteFileStructure(
+            line_count=len(self._lines), h1_headings=None
+        )
+        return file_structure
+
+    def split_file(self, file_structure: NoteFileStructure) -> None:
+        pass
 
     @property
     def num_lines_parsed(self) -> int:
