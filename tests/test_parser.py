@@ -38,6 +38,7 @@ def test_get_heading_line_numbers(week_1: NoteFile) -> None:
 def test_analyse_structure(week_1: NoteFile) -> None:
     file_structure: NoteFileStructure = week_1.analyse_structure()
     assert file_structure.line_count == 54
+    assert len(file_structure.h1_headings) == 5
     assert False, "write some more tests"
 
 
