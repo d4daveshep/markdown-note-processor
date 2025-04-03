@@ -1,4 +1,4 @@
-# W1 1 Jan - 7 Jan 2025
+# W1 2025: 1 Jan - 7 Jan
 
 ## Project 0 - All week long
 
