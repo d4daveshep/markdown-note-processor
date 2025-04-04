@@ -25,9 +25,11 @@ def test_split_first_weekly_file() -> None:
     # load the file
     note_file: NoteFile = NoteFile(md_filepath)
 
-    # check the file structure
-    # NoteFile.validate_weekly_heading(note_file._lines[0])
-    assert False, "add more stuff here"
+    # check project files are created
+    project_files: list[Path] = [test_dir / f"Project {n}.md" for n in range(0, 3)]
+    for file in project_files:
+        assert file.exists(), f"{file} not found"
+    # assert False, "add more stuff here"
 
 
 def test_split_second_weekly_file() -> None:
