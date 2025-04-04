@@ -1,3 +1,4 @@
+import re
 from enum import StrEnum
 from pathlib import Path
 from typing import NamedTuple
@@ -43,6 +44,12 @@ class NoteFile:
         with open(filepath, "r") as file:
             data: str = file.read()
             self._lines: list[str] = data.split("\n")
+
+    @staticmethod
+    def validate_weekly_heading(heading: str) -> bool:
+        pattern: str = r"^# W(0[1-9]|[1-4][0-9]|5[0-2])\s+\d{4}:"
+
+        return bool(re.match(pattern, heading))
 
     def analyse_structure(self) -> NoteFileStructure:
         """
