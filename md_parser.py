@@ -4,6 +4,10 @@ from pathlib import Path
 from typing import NamedTuple
 
 
+class FormatException(Exception):
+    pass
+
+
 class Heading(StrEnum):
     H1 = "# "
     H2 = "## "
@@ -45,11 +49,18 @@ class NoteFile:
             data: str = file.read()
             self._lines: list[str] = data.split("\n")
 
+        NoteFile.validate_weekly_heading(self._lines[0])
+
     @staticmethod
     def validate_weekly_heading(heading: str) -> bool:
         pattern: str = r"^# W(0[1-9]|[1-4][0-9]|5[0-2])\s+\d{4}:"
 
-        return bool(re.match(pattern, heading))
+        if bool(re.match(pattern, heading)):
+            return True
+        else:
+            raise FormatException(
+                'Invalid format on line 1, expecting "# Wnn yyyy: ..."'
+            )
 
     def analyse_structure(self) -> NoteFileStructure:
         """

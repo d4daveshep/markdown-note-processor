@@ -1,7 +1,7 @@
 import shutil
 from pathlib import Path
 
-from md_parser import NoteFile, NoteFileStructure
+from md_parser import NoteFile
 
 
 def test_split_first_weekly_file() -> None:
@@ -22,21 +22,12 @@ def test_split_first_weekly_file() -> None:
     md_filepath: Path = test_dir / src_md_filepath.name
     shutil.copy(src_md_filepath, md_filepath)
 
-    # parse the file
+    # load the file
     note_file: NoteFile = NoteFile(md_filepath)
 
     # check the file structure
-    note_file_structure: NoteFileStructure = note_file.analyse_structure()
-
-    # split the file
-    note_file.split_file(note_file_structure)
-
-    # check the correct files are created
-    assert False, "need to validate the files are created"
-
-    # check the contents of the files matches expected contents
-
-    pass
+    # NoteFile.validate_weekly_heading(note_file._lines[0])
+    assert False, "add more stuff here"
 
 
 def test_split_second_weekly_file() -> None:

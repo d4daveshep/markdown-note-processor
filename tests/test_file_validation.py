@@ -1,4 +1,6 @@
-from md_parser import NoteFile
+import pytest
+
+from md_parser import FormatException, NoteFile
 
 
 def test_first_h1_is_weekly_format():
@@ -17,4 +19,5 @@ def test_first_h1_is_weekly_format():
         "# w12 2023: Invalid - 'W' must be uppercase",
     ]
     for heading in invalid_h1:
-        assert not NoteFile.validate_weekly_heading(heading)
+        with pytest.raises(FormatException):
+            NoteFile.validate_weekly_heading(heading)
