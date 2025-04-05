@@ -2,14 +2,7 @@ from pathlib import Path
 
 import pytest
 
-from md_parser import Heading, NoteFile, NoteFileStructure
-
-
-@pytest.fixture
-def week_1() -> NoteFile:
-    md_filepath: Path = Path("tests/Test Week 1.md")
-    md_parser: NoteFile = NoteFile(md_filepath)
-    return md_parser
+from md_parser import Heading, NoteFile
 
 
 def test_load_file() -> None:
@@ -35,11 +28,11 @@ def test_get_heading_line_numbers(week_1: NoteFile) -> None:
     assert len(h2_lines) == 8
 
 
-def test_analyse_structure(week_1: NoteFile) -> None:
-    file_structure: NoteFileStructure = week_1.analyse_structure()
-    assert file_structure.line_count == 54
-    assert len(file_structure.h1_headings) == 5
-    assert False, "write some more tests"
+# def test_analyse_structure(week_1: NoteFile) -> None:
+#     file_structure: NoteFileStructure = week_1.analyse_structure()
+#     assert file_structure.line_count == 54
+#     assert len(file_structure.h1_headings) == 5
+#     assert False, "write some more tests"
 
 
 def test_h2_lines_in_h1(week_1: NoteFile) -> None:

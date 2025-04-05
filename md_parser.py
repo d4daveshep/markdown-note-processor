@@ -1,38 +1,42 @@
 import re
+from dataclasses import dataclass
 from enum import StrEnum
 from pathlib import Path
-from typing import NamedTuple
+
+# class LineRange(NamedTuple):
+#     start: int
+#     end: int
+#
+#
+# class H2_Heading(NamedTuple):
+#     lines: LineRange
+#     project_name: str
+#     title: str = ""
+#
+#
+# class H1_Heading(NamedTuple):
+#     line_num: int
+#     date: str
+#     h2s: list[H2_Heading]
+#
+#
+# class NoteFileStructure(NamedTuple):
+#     line_count: int
+#     h1_headings: list[H1_Heading]
 
 
 class FormatException(Exception):
     pass
 
 
+@dataclass
+class SplitResults:
+    lines_procesed: int = 0
+
+
 class Heading(StrEnum):
     H1 = "# "
     H2 = "## "
-
-
-class LineRange(NamedTuple):
-    start: int
-    end: int
-
-
-class H2_Heading(NamedTuple):
-    lines: LineRange
-    project_name: str
-    title: str = ""
-
-
-class H1_Heading(NamedTuple):
-    line_num: int
-    date: str
-    h2s: list[H2_Heading]
-
-
-class NoteFileStructure(NamedTuple):
-    line_count: int
-    h1_headings: list[H1_Heading]
 
 
 class NoteFile:
@@ -53,6 +57,14 @@ class NoteFile:
 
     @staticmethod
     def validate_weekly_heading(heading: str) -> bool:
+        """
+        Validate the heading matches the correct weekly format: # Wnn yyyy: <date range>
+
+        Rules are as follows:
+            Wnn must be two digits e.g. 01, 45
+            yyyy is the year
+            <date range> is not validated and could be any text
+        """
         pattern: str = r"^# W(0[1-9]|[1-4][0-9]|5[0-2])\s+\d{4}:"
 
         if bool(re.match(pattern, heading)):
@@ -62,23 +74,8 @@ class NoteFile:
                 'Invalid format on line 1, expecting "# Wnn yyyy: ..."'
             )
 
-    def analyse_structure(self) -> NoteFileStructure:
-        """
-        start at the top of the file
-        we're not in an H1 or H2
-        if we hit H1, save line as H1.start and remember we're in an H1
-        if we hit H2 before H1 then raise an error and stop
-        if we hit H2 after H1 then save line as H2 start and remember we're in an H2
-        if we hit H1 while in H1 then save line-1 as H1 end and H2 end
-        """
-
-        file_structure: NoteFileStructure = NoteFileStructure(
-            line_count=len(self._lines), h1_headings=None
-        )
-        return file_structure
-
-    def split_file(self, file_structure: NoteFileStructure) -> None:
-        pass
+    def split_file(self) -> SplitResults:
+        return SplitResults()
 
     @property
     def num_lines_parsed(self) -> int:
