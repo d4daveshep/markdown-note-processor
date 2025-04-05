@@ -1,8 +1,13 @@
+import logging
 import re
 from dataclasses import dataclass
 from enum import StrEnum
 from pathlib import Path
 
+import structlog
+
+log: structlog.BoundLogger = structlog.get_logger()
+structlog.configure(wrapper_class=structlog.make_filtering_bound_logger(logging.DEBUG))
 # class LineRange(NamedTuple):
 #     start: int
 #     end: int
@@ -31,7 +36,7 @@ class FormatException(Exception):
 
 @dataclass
 class SplitResults:
-    lines_procesed: int = 0
+    lines_procesed: int
 
 
 class Heading(StrEnum):
@@ -75,7 +80,11 @@ class NoteFile:
             )
 
     def split_file(self) -> SplitResults:
-        return SplitResults()
+        results: SplitResults = SplitResults(lines_procesed=0)
+        for line_num, line in enumerate(self._lines, start=1):
+            if line.startswith(Heading.H1):
+                log.debug(f"line {line_num}: H1 heading: {line[2:]}")
+        return results
 
     @property
     def num_lines_parsed(self) -> int:
