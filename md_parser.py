@@ -8,26 +8,6 @@ import structlog
 
 log: structlog.BoundLogger = structlog.get_logger()
 structlog.configure(wrapper_class=structlog.make_filtering_bound_logger(logging.DEBUG))
-# class LineRange(NamedTuple):
-#     start: int
-#     end: int
-#
-#
-# class H2_Heading(NamedTuple):
-#     lines: LineRange
-#     project_name: str
-#     title: str = ""
-#
-#
-# class H1_Heading(NamedTuple):
-#     line_num: int
-#     date: str
-#     h2s: list[H2_Heading]
-#
-#
-# class NoteFileStructure(NamedTuple):
-#     line_count: int
-#     h1_headings: list[H1_Heading]
 
 
 class FormatException(Exception):
@@ -112,15 +92,3 @@ class NoteFile:
     @property
     def num_lines_parsed(self) -> int:
         return len(self._lines)
-
-    def heading_line_numbers(self, heading: Heading) -> list[int]:
-        line_nums: list[int] = []
-        for line_num, line in enumerate(self._lines):
-            if line.startswith(heading):
-                line_nums.append(line_num)
-        return line_nums
-
-    def h2_lines_in_h1(self, h1_index: int) -> list[tuple[int, int]]:
-        h1_lines: list[int] = self.heading_line_numbers(Heading.H1)
-        h2_lines: list[int] = self.heading_line_numbers(Heading.H2)
-        return []
