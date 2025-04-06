@@ -3,6 +3,7 @@ import re
 from dataclasses import dataclass
 from datetime import datetime
 from enum import StrEnum
+from io import TextIOWrapper
 from pathlib import Path
 
 import structlog
@@ -35,14 +36,56 @@ class NoteFile:
     def __init__(self, filepath: Path):
         if not filepath.exists():
             raise FileNotFoundError(f"{filepath}")
+        self.file_directory: Path = filepath.parent
         with open(filepath, "r") as file:
             data: str = file.read()
             self._lines: list[str] = data.split("\n")
 
         NoteFile.validate_weekly_heading(self._lines[0])
 
+    def split_file(self) -> SplitResults:
+        """
+        Split the file based on the Parsing Rules.md file
+
+        """
+        results: SplitResults = SplitResults(lines_procesed=0)
+        date_str: str = ""
+        project_name: str = ""
+        title: str = ""
+        project_file: TextIOWrapper | None = None
+
+        for line_num, line in enumerate(self._lines, start=1):
+            # skip first line for now
+            if line_num == 1:
+                continue
+            if line.startswith(Heading.H1):
+                log.debug(f"line {line_num}: H1 heading: {line[2:]}")
+                date_str = NoteFile.validate_date_heading(h1_heading=line)
+                # close the project file (if it's open)
+                if project_file:
+                    project_file.close()
+
+            if line.startswith(Heading.H2):
+                log.debug(f"line {line_num}: H2 heading: {line[3:]}")
+
+                project_name, title = NoteFile.split_project_name_heading(line)
+
+                # close the previous project file and open/create the new one for appending text
+                if project_file:
+                    project_file.close()
+                project_file = open(
+                    self.file_directory / Path(project_name + ".md"), "a"
+                )
+
+        project_file.close()
+        return results
+
+    @property
+    def num_lines_parsed(self) -> int:
+        return len(self._lines)
+
     @staticmethod
-    def validate_weekly_heading(heading: str) -> bool:
+    def validate_weekly_heading(h1_heading: str) -> str:
         """
         Validate the heading matches the correct weekly format: # Wnn yyyy: <date range>
 
@@ -50,11 +93,13 @@ class NoteFile:
             Wnn must be two digits e.g. 01, 45
             yyyy is the year
             <date range> is not validated and could be any text
+
+        Return: the week string e.g. W12 2024
         """
         pattern: str = r"^# W(0[1-9]|[1-4][0-9]|5[0-2])\s+\d{4}:"
 
-        if bool(re.match(pattern, heading)):
-            return True
+        if bool(re.match(pattern, h1_heading)):
+            return h1_heading[2:10]
         else:
             raise FormatException(
                 'Invalid format on line 1, expecting "# Wnn yyyy: ..."'
@@ -98,16 +143,3 @@ class NoteFile:
         except ValueError:
             raise FormatException('Invalid date format, expecting "# ddd dd mmm yyyy"')
         return date_str
-
-    def split_file(self) -> SplitResults:
-        results: SplitResults = SplitResults(lines_procesed=0)
-        for line_num, line in enumerate(self._lines, start=1):
-            if line.startswith(Heading.H1):
-                log.debug(f"line {line_num}: H1 heading: {line[2:]}")
-                project_name, title = NoteFile.split_project_name_heading(line)
-                assert False, "TODO do something with project name and title"
-        return results
-
-    @property
-    def num_lines_parsed(self) -> int:
-        return len(self._lines)
