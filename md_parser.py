@@ -79,6 +79,29 @@ class NoteFile:
                 'Invalid format on line 1, expecting "# Wnn yyyy: ..."'
             )
 
+    @staticmethod
+    def split_project_name_heading(heading: str) -> tuple[str, str]:
+        """
+        Split the heading into project name and title around the first hyphen in the heading
+
+        Return: project_name, title
+        """
+        project_name: str
+        title: str
+        if not heading.startswith("# ") or len(heading) < 3:
+            raise FormatException('Invalid format, expecting "# <project name>"')
+        hyphen_index: int = heading.find("-", 2)
+        if hyphen_index == -1:
+            project_name = heading[2:]
+            title = ""
+        else:
+            project_name = heading[2:hyphen_index]
+            title = heading[hyphen_index + 1 :]
+        if project_name == "":
+            raise FormatException('Invalid format, expecting "# <project name>"')
+        log.debug(f'Project_name="{project_name}", Title="{title}"')
+        return project_name.strip(), title.strip()
+
     def split_file(self) -> SplitResults:
         results: SplitResults = SplitResults(lines_procesed=0)
         for line_num, line in enumerate(self._lines, start=1):

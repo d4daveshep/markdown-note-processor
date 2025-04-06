@@ -12,6 +12,39 @@ def test_split_file(week_1: NoteFile):
     assert results.lines_procesed == 54
 
 
+@pytest.mark.parametrize(
+    "heading, expected_project_name, expected_title",
+    [
+        ("# Project Name - This note title", "Project Name", "This note title"),
+        (
+            "# Project Name - This note title - with a hyphen",
+            "Project Name",
+            "This note title - with a hyphen",
+        ),
+        ("# Project Name Only", "Project Name Only", ""),
+    ],
+)
+def test_split_project_name_heading(
+    heading: str, expected_project_name: str, expected_title: str
+):
+    project_name, title = NoteFile.split_project_name_heading(heading)
+    assert project_name == expected_project_name
+    assert title == expected_title
+
+
+@pytest.mark.parametrize(
+    "heading",
+    [
+        ("#"),
+        ("# "),
+        ("# -"),
+    ],
+)
+def test_split_invalid_project_name_heading(heading: str):
+    with pytest.raises(FormatException):
+        project_name, title = NoteFile.split_project_name_heading(heading)
+
+
 def test_validate_weekly_heading():
     valid_h1: list[str] = [
         "# W01 2023: This is a valid string",
