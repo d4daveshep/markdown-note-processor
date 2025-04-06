@@ -54,6 +54,8 @@ class NoteFile:
         title: str = ""
         project_file: TextIOWrapper | None = None
 
+        log.debug("START")
+
         for line_num, line in enumerate(self._lines, start=1):
             # skip first line for now
             if line_num == 1:
@@ -140,6 +142,10 @@ class NoteFile:
         date_str: str = h1_heading[2:]
         try:
             datetime.strptime(date_str, "%a %d %b %Y")
+            log.debug(f'Date_str="{date_str}"')
         except ValueError:
-            raise FormatException('Invalid date format, expecting "# ddd dd mmm yyyy"')
+            log.debug(
+                f'Invalid date format: "{h1_heading}" - Ignoring lines until valid date found'
+            )
+            date_str = ""
         return date_str

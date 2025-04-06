@@ -6,6 +6,7 @@ from md_parser import FormatException, NoteFile, SplitResults
 
 
 def test_load_notefile(week_1: NoteFile) -> None:
+    assert week_1.file_directory == Path("./temp_test")
     assert week_1.num_lines_parsed == 54
 
 
@@ -79,13 +80,16 @@ def test_validate_date_heading(heading: str) -> None:
     "heading",
     [
         ("# "),
-        ("# not a date"),
     ],
 )
 def test_invalid_date_heading(heading: str) -> None:
     with pytest.raises(FormatException):
-        date_str: str = NoteFile.validate_date_heading(heading)
+        NoteFile.validate_date_heading(heading)
+
+
+def test_ignore_non_date_heading() -> None:
+    assert NoteFile.validate_date_heading("# Not a date") == ""
 
 
 def test_notefile_directory_property(week_1: NoteFile) -> None:
-    assert week_1.file_directory == Path("tests/")
+    assert week_1.file_directory == Path("temp_test/")
