@@ -1,6 +1,7 @@
 import logging
 import re
 from dataclasses import dataclass
+from datetime import datetime
 from enum import StrEnum
 from pathlib import Path
 
@@ -81,6 +82,22 @@ class NoteFile:
             raise FormatException('Invalid format, expecting "# <project name>"')
         log.debug(f'Project_name="{project_name}", Title="{title}"')
         return project_name.strip(), title.strip()
+
+    @staticmethod
+    def validate_date_heading(h1_heading: str) -> str:
+        """
+        Validate the H1 heading is a valid date in the format Mon 6 Jan 2025.
+        Raise FormatException if format is invalid
+        Return: the date in same format it was specified
+        """
+        if not h1_heading.startswith("# ") or len(h1_heading) < 3:
+            raise FormatException('Invalid date format, expecting "# ddd dd mmm yyyy"')
+        date_str: str = h1_heading[2:]
+        try:
+            datetime.strptime(date_str, "%a %d %b %Y")
+        except ValueError:
+            raise FormatException('Invalid date format, expecting "# ddd dd mmm yyyy"')
+        return date_str
 
     def split_file(self) -> SplitResults:
         results: SplitResults = SplitResults(lines_procesed=0)
