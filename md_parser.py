@@ -87,6 +87,8 @@ class NoteFile:
         for line_num, line in enumerate(self._lines, start=1):
             if line.startswith(Heading.H1):
                 log.debug(f"line {line_num}: H1 heading: {line[2:]}")
+                project_name, title = NoteFile.split_project_name_heading(line)
+                assert False, "TODO do something with project name and title"
         return results
 
     @property
