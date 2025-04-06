@@ -61,23 +61,23 @@ class NoteFile:
             )
 
     @staticmethod
-    def split_project_name_heading(heading: str) -> tuple[str, str]:
+    def split_project_name_heading(h2_heading: str) -> tuple[str, str]:
         """
-        Split the heading into project name and title around the first hyphen in the heading
+        Split the H2 heading into project name and title around the first hyphen in the heading
 
         Return: project_name, title
         """
         project_name: str
         title: str
-        if not heading.startswith("# ") or len(heading) < 3:
-            raise FormatException('Invalid format, expecting "# <project name>"')
-        hyphen_index: int = heading.find("-", 2)
+        if not h2_heading.startswith("## ") or len(h2_heading) < 4:
+            raise FormatException('Invalid format, expecting "## <project name>"')
+        hyphen_index: int = h2_heading.find("-", 3)
         if hyphen_index == -1:
-            project_name = heading[2:]
+            project_name = h2_heading[3:]
             title = ""
         else:
-            project_name = heading[2:hyphen_index]
-            title = heading[hyphen_index + 1 :]
+            project_name = h2_heading[3:hyphen_index]
+            title = h2_heading[hyphen_index + 1 :]
         if project_name == "":
             raise FormatException('Invalid format, expecting "# <project name>"')
         log.debug(f'Project_name="{project_name}", Title="{title}"')
@@ -87,7 +87,7 @@ class NoteFile:
     def validate_date_heading(h1_heading: str) -> str:
         """
         Validate the H1 heading is a valid date in the format Mon 6 Jan 2025.
-        Raise FormatException if format is invalid
+        Raise: FormatException if format is invalid, note the day of week is not verified to be correct
         Return: the date in same format it was specified
         """
         if not h1_heading.startswith("# ") or len(h1_heading) < 3:

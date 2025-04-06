@@ -13,36 +13,36 @@ def test_split_file(week_1: NoteFile) -> None:
 
 
 @pytest.mark.parametrize(
-    "heading, expected_project_name, expected_title",
+    "h2_heading, expected_project_name, expected_title",
     [
-        ("# Project Name - This note title", "Project Name", "This note title"),
+        ("## Project Name - This note title", "Project Name", "This note title"),
         (
-            "# Project Name - This note title - with a hyphen",
+            "## Project Name - This note title - with a hyphen",
             "Project Name",
             "This note title - with a hyphen",
         ),
-        ("# Project Name Only", "Project Name Only", ""),
+        ("## Project Name Only", "Project Name Only", ""),
     ],
 )
 def test_split_project_name_heading(
-    heading: str, expected_project_name: str, expected_title: str
+    h2_heading: str, expected_project_name: str, expected_title: str
 ) -> None:
-    project_name, title = NoteFile.split_project_name_heading(heading)
+    project_name, title = NoteFile.split_project_name_heading(h2_heading)
     assert project_name == expected_project_name
     assert title == expected_title
 
 
 @pytest.mark.parametrize(
-    "heading",
+    "h2_heading",
     [
-        ("#"),
-        ("# "),
-        ("# -"),
+        ("##"),
+        ("## "),
+        ("## -"),
     ],
 )
-def test_split_invalid_project_name_heading(heading: str) -> None:
+def test_split_invalid_project_name_heading(h2_heading: str) -> None:
     with pytest.raises(FormatException):
-        project_name, title = NoteFile.split_project_name_heading(heading)
+        project_name, title = NoteFile.split_project_name_heading(h2_heading)
 
 
 def test_validate_weekly_heading() -> None:
