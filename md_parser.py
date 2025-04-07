@@ -89,22 +89,22 @@ class NoteFile:
     @staticmethod
     def validate_weekly_heading(h1_heading: str) -> str:
         """
-        Validate the heading matches the correct weekly format: # Wnn yyyy: <date range>
+        Validate the heading matches the correct weekly format: # Week nn yyyy: <date range>
 
         Rules are as follows:
-            Wnn must be two digits e.g. 01, 45
+            nn must be two digits e.g. 01, 45
             yyyy is the year
             <date range> is not validated and could be any text
 
-        Return: the week string e.g. W12 2024
+        Return: the week string e.g. Week 12 2024
         """
-        pattern: str = r"^# W(0[1-9]|[1-4][0-9]|5[0-2])\s+\d{4}:"
+        pattern: str = r"^# Week\s(0[1-9]|[1-4][0-9]|5[0-2])\s+\d{4}:"
 
         if bool(re.match(pattern, h1_heading)):
-            return h1_heading[2:10]
+            return h1_heading[2:14]
         else:
             raise FormatException(
-                'Invalid format on line 1, expecting "# Wnn yyyy: ..."'
+                'Invalid format on line 1, expecting "# Week nn yyyy: ..."'
             )
 
     @staticmethod

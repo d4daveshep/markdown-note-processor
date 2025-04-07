@@ -51,19 +51,19 @@ def test_split_invalid_project_name_heading(h2_heading: str) -> None:
 @pytest.mark.parametrize(
     "h1_heading, week_num",
     [
-        ("# W01 2023: This is a valid string", "W01 2023"),
-        ("# W01 2023: This is a valid string", "W01 2023"),
+        ("# Week 01 2023: This is a valid string", "Week 01 2023"),
+        ("# Week 01 2023: This is a valid string", "Week 01 2023"),
     ],
 )
 def test_validate_weekly_heading(h1_heading: str, week_num: str) -> None:
     assert NoteFile.validate_weekly_heading(h1_heading) == week_num
 
     invalid_h2: list[str] = [
-        "# W00 2023: Invalid - week number out of range",
-        "# W53 2023: Invalid - week number out of range",
-        "# W12 23: Invalid - year isn't 4 digits",
-        " # W12 2023: Invalid - doesn't start at beginning of string",
-        "# w12 2023: Invalid - 'W' must be uppercase",
+        "# Week 00 2023: Invalid - week number out of range",
+        "# Week 53 2023: Invalid - week number out of range",
+        "# Week 12 23: Invalid - year isn't 4 digits",
+        " # Week 12 2023: Invalid - doesn't start at beginning of string",
+        "# week 03 2023: Invalid - 'W' must be uppercase",
     ]
     for heading in invalid_h2:
         with pytest.raises(FormatException):
