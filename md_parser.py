@@ -19,6 +19,7 @@ class FormatException(Exception):
 @dataclass
 class SplitResults:
     lines_procesed: int
+    week_num:str=""
 
 
 class Heading(StrEnum):
@@ -56,18 +57,24 @@ class NoteFile:
 
         log.debug("START")
 
+        # loop through the lines, use 1-based line numbering to ease debugging and output
         for line_num, line in enumerate(self._lines, start=1):
+
             # skip first line for now
             if line_num == 1:
-                continue
-            if line.startswith(Heading.H1):
+                log.debug(f"line {line_num}: H1 Week heading")
+                week_num = NoteFile.validate_weekly_heading(line)
+                results.week_num = week_num
+
+            elif line.startswith(Heading.H1):
                 log.debug(f"line {line_num}: H1 heading: {line[2:]}")
                 date_str = NoteFile.validate_date_heading(h1_heading=line)
                 # close the project file (if it's open)
+                project_name = ""
                 if project_file:
                     project_file.close()
 
-            if line.startswith(Heading.H2):
+            elif line.startswith(Heading.H2):
                 log.debug(f"line {line_num}: H2 heading: {line[3:]}")
 
                 project_name, title = NoteFile.split_project_name_heading(line)
@@ -78,6 +85,17 @@ class NoteFile:
                 project_file = open(
                     self.file_directory / Path(project_name + ".md"), "a"
                 )
+                project_file.write(line)
+
+            elif project_name:
+                log.debug(f"line {line_num}: Appending to project: {project_name}")
+                project_file.write(line)
+
+            else:
+                # write the line to the project file or ignore it
+                log.debug(f"line {line_num}: IGNORED")
+
+            results.lines_procesed += 1
 
         if project_file:
             project_file.close()
@@ -97,11 +115,12 @@ class NoteFile:
             yyyy is the year
             <date range> is not validated and could be any text
 
-        Return: the week string e.g. Week 12 2024
+        Return: the week string e.g. "Week 12 2024"
         """
         pattern: str = r"^# Week\s(0[1-9]|[1-4][0-9]|5[0-2])\s+\d{4}:"
 
         if bool(re.match(pattern, h1_heading)):
+            log.debug(f"Week_num=\"{h1_heading[2:14]}\"")
             return h1_heading[2:14]
         else:
             raise FormatException(

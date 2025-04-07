@@ -13,7 +13,8 @@ def test_load_notefile(week_1: NoteFile) -> None:
 def test_split_file(week_1: NoteFile) -> None:
     results: SplitResults = week_1.split_file()
     assert results.lines_procesed == 54
-
+    assert results.week_num=="Week 01 2025"
+    assert False, "add more to SplitResults"
 
 @pytest.mark.parametrize(
     "h2_heading, expected_project_name, expected_title",
