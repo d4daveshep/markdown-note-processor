@@ -79,7 +79,8 @@ class NoteFile:
                     self.file_directory / Path(project_name + ".md"), "a"
                 )
 
-        project_file.close()
+        if project_file:
+            project_file.close()
         return results
 
     @property
