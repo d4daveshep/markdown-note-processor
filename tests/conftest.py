@@ -1,5 +1,6 @@
 import shutil
 from pathlib import Path
+from typing import Generator
 
 import pytest
 
@@ -7,7 +8,7 @@ from md_parser import NoteFile
 
 
 @pytest.fixture
-def temp_dir() -> Path:
+def temp_dir() -> Generator[Path]:
     # create the test directory
     test_dir: Path = Path("./temp_test")
     test_dir.mkdir(exist_ok=True)
@@ -18,11 +19,16 @@ def temp_dir() -> Path:
         if file_path.is_file():
             file_path.unlink()
 
-    return test_dir
+    yield test_dir
+
+    # delete all files in test directory
+    for file_path in test_dir.glob("*"):
+        if file_path.is_file():
+            file_path.unlink()
 
 
 @pytest.fixture
-def week_1(temp_dir: Path) -> NoteFile:
+def week_1(temp_dir: Path) ->Generator[NoteFile]:
     # specify the file and the directory to work in
     src_md_filepath: Path = Path("tests/Test Week 1.md")
 
@@ -33,4 +39,4 @@ def week_1(temp_dir: Path) -> NoteFile:
     # load the file
     note_file: NoteFile = NoteFile(md_filepath)
 
-    return note_file
+    yield note_file
