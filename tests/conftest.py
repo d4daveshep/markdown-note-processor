@@ -21,14 +21,14 @@ def temp_dir() -> Generator[Path]:
 
     yield test_dir
 
-    # delete all files in test directory
-    for file_path in test_dir.glob("*"):
-        if file_path.is_file():
-            file_path.unlink()
+    # # delete all files in test directory
+    # for file_path in test_dir.glob("*"):
+    #     if file_path.is_file():
+    #         file_path.unlink()
 
 
 @pytest.fixture
-def week_1(temp_dir: Path) ->Generator[NoteFile]:
+def week_1(temp_dir: Path) -> Generator[NoteFile]:
     # specify the file and the directory to work in
     src_md_filepath: Path = Path("tests/Test Week 1.md")
 

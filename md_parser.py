@@ -53,6 +53,7 @@ class NoteFile:
         date_str: str = ""
         project_name: str = ""
         title: str = ""
+        week_num: str = ""
         project_file: TextIOWrapper | None = None
 
         log.debug("START")
@@ -68,6 +69,7 @@ class NoteFile:
             elif line.startswith(Heading.H1):
                 log.debug(f"line {line_num}: H1 heading: {line[2:]}")
                 date_str = NoteFile.validate_date_heading(h1_heading=line)
+
                 # close the project file (if it's open)
                 project_name = ""
                 if project_file:
@@ -81,14 +83,26 @@ class NoteFile:
                 # close the previous project file and open/create the new one for appending text
                 if project_file:
                     project_file.close()
-                project_file = open(
-                    self.file_directory / Path(project_name + ".md"), "a"
-                )
-                project_file.write(f"# {date_str}: {title}")
+                # if the file already exists then just open it, otherwise create it and write the project name as a H1 heading
+                if (self.file_directory / Path(project_name + ".md")).exists():
+                    project_file = open(
+                        self.file_directory / Path(project_name + ".md"), "a"
+                    )
+                else:
+                    project_file = open(
+                        self.file_directory / Path(project_name + ".md"), "a"
+                    )
+                    project_file.write(f"# {project_name}\n\n")
+
+                # if use the week_num if we don't have a date_str
+                if date_str == "":
+                    project_file.write(f"## {week_num}: {title}\n")
+                else:
+                    project_file.write(f"## {date_str}: {title}\n")
 
             elif project_name:
                 log.debug(f"line {line_num}: Appending to project: {project_name}")
-                project_file.write(line)
+                project_file.write(line + "\n")
 
             else:
                 # write the line to the project file or ignore it

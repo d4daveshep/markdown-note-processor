@@ -1,15 +1,20 @@
+import filecmp
 from pathlib import Path
 
 from md_parser import NoteFile
 
 
-def test_split_first_weekly_file(week_1:NoteFile, temp_dir:Path) -> None:
+def test_split_first_weekly_file(week_1: NoteFile, temp_dir: Path) -> None:
     week_1.split_file()
 
     # check project files are created
-    project_files: list[Path] = [temp_dir / f"Project {n}.md" for n in range(0, 3)]
+    project_files: list[str] = [f"Project {n}.md" for n in range(0, 3)]
     for file in project_files:
-        assert file.exists(), f"{file} not found"
+        assert Path(temp_dir / file).exists(), f"{file} not found"
+        assert filecmp.cmp(Path(f"./tests/{file}"), Path(temp_dir / file)), (
+            f"{file} differs"
+        )
+
     assert False, "add more stuff here"
 
 
