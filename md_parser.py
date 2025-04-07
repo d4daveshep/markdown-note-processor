@@ -19,7 +19,7 @@ class FormatException(Exception):
 @dataclass
 class SplitResults:
     lines_procesed: int
-    week_num:str=""
+    week_num: str = ""
 
 
 class Heading(StrEnum):
@@ -59,7 +59,6 @@ class NoteFile:
 
         # loop through the lines, use 1-based line numbering to ease debugging and output
         for line_num, line in enumerate(self._lines, start=1):
-
             # skip first line for now
             if line_num == 1:
                 log.debug(f"line {line_num}: H1 Week heading")
@@ -85,8 +84,7 @@ class NoteFile:
                 project_file = open(
                     self.file_directory / Path(project_name + ".md"), "a"
                 )
-                project_file.write(line)
-                FIX ABOVE 
+                project_file.write(f"# {date_str}: {title}")
 
             elif project_name:
                 log.debug(f"line {line_num}: Appending to project: {project_name}")
@@ -121,7 +119,7 @@ class NoteFile:
         pattern: str = r"^# Week\s(0[1-9]|[1-4][0-9]|5[0-2])\s+\d{4}:"
 
         if bool(re.match(pattern, h1_heading)):
-            log.debug(f"Week_num=\"{h1_heading[2:14]}\"")
+            log.debug(f'Week_num="{h1_heading[2:14]}"')
             return h1_heading[2:14]
         else:
             raise FormatException(
