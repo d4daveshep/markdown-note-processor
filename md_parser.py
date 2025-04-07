@@ -86,6 +86,7 @@ class NoteFile:
                     self.file_directory / Path(project_name + ".md"), "a"
                 )
                 project_file.write(line)
+                FIX ABOVE 
 
             elif project_name:
                 log.debug(f"line {line_num}: Appending to project: {project_name}")
