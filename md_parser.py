@@ -51,19 +51,20 @@ class NoteFile:
         """
         Split the file based on the Parsing Rules.md file
 
+        Return the summary results in a SplitResults object
         """
         results: SplitResults = SplitResults(lines_procesed=0)
         date_str: str = ""
         project_name: str = ""
         title: str = ""
         week_num: str = ""
-        project_file: TextIOWrapper | None = None
+        project_file: TextIOWrapper = open("/dev/null")
 
         log.debug("START")
 
         # loop through the lines, use 1-based line numbering to ease debugging and output
         for line_num, line in enumerate(self._lines, start=1):
-            # skip first line for now
+            # process the first line separately as it contains the week number we need
             if line_num == 1:
                 log.debug(f"line {line_num}: H1 Week heading")
                 week_num = NoteFile.validate_weekly_heading(line)
@@ -75,8 +76,7 @@ class NoteFile:
 
                 # close the project file (if it's open)
                 project_name = ""
-                if project_file:
-                    project_file.close()
+                project_file.close()
 
             elif line.startswith(Heading.H2):
                 log.debug(f"line {line_num}: H2 heading: {line[3:]}")
@@ -84,8 +84,7 @@ class NoteFile:
                 project_name, title = NoteFile.split_project_name_heading(line)
 
                 # close the previous project file and open/create the new one for appending text
-                if project_file:
-                    project_file.close()
+                project_file.close()
                 # if the file already exists then just open it, otherwise create it and write the project name as a H1 heading
                 if (self.file_directory / Path(project_name + ".md")).exists():
                     project_file = open(
@@ -116,8 +115,7 @@ class NoteFile:
 
             results.lines_procesed += 1
 
-        if project_file:
-            project_file.close()
+        project_file.close()
         return results
 
     @property
