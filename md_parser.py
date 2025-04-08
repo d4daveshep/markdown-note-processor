@@ -1,5 +1,6 @@
 import logging
 import re
+import sys
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import StrEnum
@@ -187,3 +188,13 @@ class NoteFile:
             )
             date_str = ""
         return date_str
+
+
+if __name__ == "__main__":
+    if len(sys.argv) > 1:
+        note_filepath: str = sys.argv[1]
+
+        weekly_notefile: NoteFile = NoteFile(Path(note_filepath))
+        results: SplitResults = weekly_notefile.split_file()
+        print("\nCompleted\n")
+        print(results)
