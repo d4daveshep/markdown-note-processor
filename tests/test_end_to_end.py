@@ -7,15 +7,13 @@ from md_parser import NoteFile
 def test_split_first_weekly_file(week_1: NoteFile, temp_dir: Path) -> None:
     week_1.split_file()
 
-    # check project files are created
+    # check project files are created and are written as expected
     project_files: list[str] = [f"Project {n}.md" for n in range(0, 3)]
     for file in project_files:
         assert Path(temp_dir / file).exists(), f"{file} not found"
         assert filecmp.cmp(Path(f"./tests/{file}"), Path(temp_dir / file)), (
             f"{file} differs"
         )
-
-    assert False, "add more stuff here"
 
 
 def test_split_second_weekly_file() -> None:

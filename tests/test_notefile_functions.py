@@ -13,8 +13,15 @@ def test_load_notefile(week_1: NoteFile) -> None:
 def test_split_file(week_1: NoteFile) -> None:
     results: SplitResults = week_1.split_file()
     assert results.lines_procesed == 54
-    assert results.week_num=="Week 01 2025"
-    assert False, "add more to SplitResults"
+    assert results.week_num == "Week 01 2025"
+    assert len(results.projects) == 5
+    assert "Project 1" in results.projects
+    assert "What if we have no hyphen" in results.projects
+    assert len(results.days) == 4
+    assert "Week 01 2025" in results.days
+    assert "Thu 2 Jan 2025" in results.days
+    assert "Non-Date stuff" not in results.days
+
 
 @pytest.mark.parametrize(
     "h2_heading, expected_project_name, expected_title",

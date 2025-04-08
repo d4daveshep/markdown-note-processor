@@ -1,6 +1,6 @@
 import logging
 import re
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime
 from enum import StrEnum
 from io import TextIOWrapper
@@ -20,6 +20,8 @@ class FormatException(Exception):
 class SplitResults:
     lines_procesed: int
     week_num: str = ""
+    projects: set[str] = field(default_factory=set)
+    days: set[str] = field(default_factory=set)
 
 
 class Heading(StrEnum):
@@ -93,12 +95,15 @@ class NoteFile:
                         self.file_directory / Path(project_name + ".md"), "a"
                     )
                     project_file.write(f"# {project_name}\n\n")
+                    results.projects.add(project_name)
 
                 # if use the week_num if we don't have a date_str
                 if date_str == "":
                     project_file.write(f"## {week_num}: {title}\n")
+                    results.days.add(week_num)
                 else:
                     project_file.write(f"## {date_str}: {title}\n")
+                    results.days.add(date_str)
 
             elif project_name:
                 log.debug(f"line {line_num}: Appending to project: {project_name}")
