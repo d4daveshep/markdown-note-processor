@@ -18,10 +18,17 @@ class FormatException(Exception):
 
 
 @dataclass
+class ProjectFileDetails:
+    name: str
+    date_str: str = ""
+    created: bool = False
+
+
+@dataclass
 class SplitResults:
-    lines_procesed: int
+    lines_procesed: int = 0
     week_num: str = ""
-    projects: set[str] = field(default_factory=set)
+    projects: dict[str, ProjectFileDetails] = field(default_factory=dict)
     days: set[str] = field(default_factory=set)
 
 
@@ -82,6 +89,9 @@ class NoteFile:
                 log.debug(f"line {line_num}: H2 heading: {line[3:]}")
 
                 project_name, title = NoteFile.split_project_name_heading(line)
+                project_details: ProjectFileDetails = ProjectFileDetails(
+                    name=project_name
+                )
 
                 # close the previous project file and open/create the new one for appending text
                 project_file.close()
@@ -90,12 +100,14 @@ class NoteFile:
                     project_file = open(
                         self.file_directory / Path(project_name + ".md"), "a"
                     )
+                    project_details.create = True
                 else:
                     project_file = open(
                         self.file_directory / Path(project_name + ".md"), "a"
                     )
                     project_file.write(f"# {project_name}\n\n")
-                    results.projects.add(project_name)
+                    project_details.create = True
+                results.projects[project_name] = project_details
 
                 # if use the week_num if we don't have a date_str
                 if date_str == "":
