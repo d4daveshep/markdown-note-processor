@@ -18,10 +18,18 @@ class FormatException(Exception):
 
 
 @dataclass
+class NoteSummary:
+    title: str
+    date_str: str
+    lines_written: int = 0
+
+
+@dataclass
 class ProjectFileDetails:
     name: str
     date_str: str = ""
     created: bool = False
+    entries: list[NoteSummary] = field(default_factory=list)
 
 
 @dataclass
