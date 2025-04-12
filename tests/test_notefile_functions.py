@@ -2,7 +2,7 @@ from pathlib import Path
 
 import pytest
 
-from md_parser import FormatException, NoteFile, SplitResults
+from md_parser import FormatException, NoteFile, ProjectFileDetails, SplitResults
 
 
 def test_load_notefile(week_1: NoteFile) -> None:
@@ -15,7 +15,14 @@ def test_split_file(week_1: NoteFile) -> None:
     assert results.lines_procesed == 54
     assert results.week_num == "Week 01 2025"
     assert len(results.projects) == 5
+
     assert "Project 1" in results.projects
+    project_1_results: ProjectFileDetails = results.projects["Project 1"]
+    assert len(project_1_results.entries) == 3
+    assert project_1_results.entries[0].date_str == "Wed 1 Jan 2025"
+    assert project_1_results.entries[0].title == "First project day"
+    assert project_1_results.entries[0].lines_written == 3
+
     assert "What if we have no hyphen" in results.projects
     assert len(results.days) == 4
     assert "Week 01 2025" in results.days

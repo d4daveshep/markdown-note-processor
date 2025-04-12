@@ -1,11 +1,11 @@
 import filecmp
 from pathlib import Path
 
-from md_parser import NoteFile
+from md_parser import NoteFile, SplitResults
 
 
 def test_split_first_weekly_file(week_1: NoteFile, temp_dir: Path) -> None:
-    week_1.split_file()
+    results: SplitResults = week_1.split_file()
 
     # check project files are created and are written as expected
     project_files: list[str] = [f"Project {n}.md" for n in range(0, 3)]
@@ -14,6 +14,8 @@ def test_split_first_weekly_file(week_1: NoteFile, temp_dir: Path) -> None:
         assert filecmp.cmp(Path(f"./tests/{file}"), Path(temp_dir / file)), (
             f"{file} differs"
         )
+
+    assert results.lines_procesed == 54
 
 
 def test_split_second_weekly_file() -> None:
