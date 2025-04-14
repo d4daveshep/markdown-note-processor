@@ -108,26 +108,35 @@ class NoteFile:
                     project_file = open(
                         self.file_directory / Path(project_name + ".md"), "a"
                     )
-                    project_details.create = True
+                    project_details.created = False
                 else:
                     project_file = open(
                         self.file_directory / Path(project_name + ".md"), "a"
                     )
                     project_file.write(f"# {project_name}\n\n")
-                    project_details.create = True
+                    project_details.created = True
                 results.projects[project_name] = project_details
 
                 # if use the week_num if we don't have a date_str
                 if date_str == "":
                     project_file.write(f"## {week_num}: {title}\n")
-                    results.days.add(week_num)
+                    project_details.entries.append(
+                        NoteSummary(title=title, date_str=week_num)
+                    )
                 else:
                     project_file.write(f"## {date_str}: {title}\n")
-                    results.days.add(date_str)
+                    project_details.entries.append(
+                        NoteSummary(title=title, date_str=week_num)
+                    )
 
             elif project_name:
                 log.debug(f"line {line_num}: Appending to project: {project_name}")
                 project_file.write(line + "\n")
+                assert False, "TODO really need to refactor and sort out the logic"
+                note_summary: NoteSummary = results.projects[project_name].entries[
+                    (title, date_str)
+                ]
+                note_summary.lines_written += 1
 
             else:
                 # write the line to the project file or ignore it
