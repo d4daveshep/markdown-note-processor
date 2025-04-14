@@ -1,4 +1,4 @@
-from md_parser import NoteSummary, ProjectFileDetails, SplitResults
+from md_parser import ProjectFileDetails, SplitResults
 
 
 def test_create_empty_split_results() -> None:
@@ -30,16 +30,10 @@ def test_profile_file_details() -> None:
     assert not pfd.created
 
 
-def test_note_summary_entries() -> None:
+def test_project_lines_written() -> None:
     pfd: ProjectFileDetails = ProjectFileDetails(name="Project 1")
-    assert len(pfd.entries) == 0
+    assert len(pfd.lines_written) == 0
 
-    note_summary: NoteSummary = NoteSummary(
-        title="My first note", date_str="Wed 1 Jan 2025"
-    )
-    assert note_summary.lines_written == 0
-    pfd.entries.append(note_summary)
-    assert len(pfd.entries) == 1
-
-    note_summary.lines_written += 1
-    assert note_summary.lines_written == 1
+    pfd.lines_written[("Title", "Date")] = 0
+    pfd.lines_written[("Title", "Date")] += 1
+    assert pfd.lines_written[("Title", "Date")] == 1

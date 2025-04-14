@@ -18,10 +18,19 @@ class FormatException(Exception):
 
 
 @dataclass
-class NoteSummary:
-    title: str
-    date_str: str
-    lines_written: int = 0
+class SplitState:
+    week_num: str = ""
+    date_str: str = ""
+    project_name = ""
+    project_file: TextIOWrapper = open("/dev/null")
+    title: str = ""
+
+
+# @dataclass
+# class NoteSummary:
+#     title: str
+#     date_str: str
+#     lines_written: int = 0
 
 
 @dataclass
@@ -29,7 +38,7 @@ class ProjectFileDetails:
     name: str
     date_str: str = ""
     created: bool = False
-    entries: list[NoteSummary] = field(default_factory=list)
+    lines_written: dict[tuple[str, str], int] = field(default_factory=dict)
 
 
 @dataclass
@@ -69,11 +78,12 @@ class NoteFile:
         Return the summary results in a SplitResults object
         """
         results: SplitResults = SplitResults(lines_procesed=0)
-        date_str: str = ""
-        project_name: str = ""
-        title: str = ""
-        week_num: str = ""
-        project_file: TextIOWrapper = open("/dev/null")
+        split_state: SplitState = SplitState()
+        # date_str: str = ""
+        # project_name: str = ""
+        # title: str = ""
+        # week_num: str = ""
+        # project_file: TextIOWrapper = open("/dev/null")
 
         log.debug("START")
 
@@ -82,69 +92,90 @@ class NoteFile:
             # process the first line separately as it contains the week number we need
             if line_num == 1:
                 log.debug(f"line {line_num}: H1 Week heading")
-                week_num = NoteFile.validate_weekly_heading(line)
-                results.week_num = week_num
+                results.week_num = NoteFile.validate_weekly_heading(line)
 
+            # if line is a H1 heading,
             elif line.startswith(Heading.H1):
                 log.debug(f"line {line_num}: H1 heading: {line[2:]}")
-                date_str = NoteFile.validate_date_heading(h1_heading=line)
 
-                # close the project file (if it's open)
-                project_name = ""
-                project_file.close()
+                # extract the date_str from it
+                split_state.date_str = NoteFile.validate_date_heading(h1_heading=line)
 
+                # assume we're going to write a new project so
+                # close the current project file (if it's open)
+                split_state.project_name = ""
+                split_state.project_file.close()
+
+            # if line is a H2 heading,
             elif line.startswith(Heading.H2):
                 log.debug(f"line {line_num}: H2 heading: {line[3:]}")
 
-                project_name, title = NoteFile.split_project_name_heading(line)
-                project_details: ProjectFileDetails = ProjectFileDetails(
-                    name=project_name
+                # extract the project_name and title
+                split_state.project_name, split_state.title = (
+                    NoteFile.split_project_name_heading(line)
+                )
+
+                # retrieve the project details if they exist or create a new project details object
+                project_details: ProjectFileDetails = results.projects.get(
+                    split_state.project_name,
+                    ProjectFileDetails(name=split_state.project_name),
                 )
 
                 # close the previous project file and open/create the new one for appending text
-                project_file.close()
+                split_state.project_file.close()
+
                 # if the file already exists then just open it, otherwise create it and write the project name as a H1 heading
-                if (self.file_directory / Path(project_name + ".md")).exists():
-                    project_file = open(
-                        self.file_directory / Path(project_name + ".md"), "a"
-                    )
+                project_filename: Path = self.file_directory / Path(
+                    split_state.project_name + ".md"
+                )
+                if (project_filename).exists():
+                    split_state.project_file = open(project_filename, "a")
                     project_details.created = False
                 else:
-                    project_file = open(
-                        self.file_directory / Path(project_name + ".md"), "a"
-                    )
-                    project_file.write(f"# {project_name}\n\n")
+                    split_state.project_file = open(project_filename, "a")
+                    split_state.project_file.write(f"# {split_state.project_name}\n\n")
                     project_details.created = True
-                results.projects[project_name] = project_details
 
-                # if use the week_num if we don't have a date_str
-                if date_str == "":
-                    project_file.write(f"## {week_num}: {title}\n")
-                    project_details.entries.append(
-                        NoteSummary(title=title, date_str=week_num)
-                    )
-                else:
-                    project_file.write(f"## {date_str}: {title}\n")
-                    project_details.entries.append(
-                        NoteSummary(title=title, date_str=week_num)
-                    )
+                # results.projects[split_state.project_name] = project_details
 
-            elif project_name:
-                log.debug(f"line {line_num}: Appending to project: {project_name}")
-                project_file.write(line + "\n")
-                assert False, "TODO really need to refactor and sort out the logic"
-                note_summary: NoteSummary = results.projects[project_name].entries[
-                    (title, date_str)
-                ]
-                note_summary.lines_written += 1
+                # write the title line to the file
+                # using the week_num as the date if we don't have a date_str
+                if split_state.date_str == "":
+                    split_state.date_str = split_state.week_num
 
+                split_state.project_file.write(
+                    f"## {split_state.date_str}: {split_state.title}\n"
+                )
+                project_details.lines_written[
+                    (split_state.title, split_state.date_str)
+                ] = 0
+
+            # if we have a project name then write the file to it
+            elif split_state.project_name:
+                log.debug(
+                    f"line {line_num}: Appending to project: {split_state.project_name}"
+                )
+
+                split_state.project_file.write(line + "\n")
+
+                project_details = results.projects.get(
+                    split_state.project_name,
+                    ProjectFileDetails(name=split_state.project_name),
+                )
+                lines: int = project_details.lines_written.get(
+                    (split_state.title, split_state.date_str), 0
+                )
+                project_details.lines_written[
+                    split_state.title, split_state.date_str
+                ] = lines + 1
+
+            # ignore the line since we haven't handled it above
             else:
-                # write the line to the project file or ignore it
                 log.debug(f"line {line_num}: IGNORED")
 
             results.lines_procesed += 1
 
-        project_file.close()
+        split_state.project_file.close()
         return results
 
     @property
