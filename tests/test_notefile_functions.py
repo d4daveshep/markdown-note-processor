@@ -18,10 +18,10 @@ def test_split_file(week_1: NoteFile) -> None:
 
     assert "Project 1" in results.projects
     project_1_results: ProjectFileDetails = results.projects["Project 1"]
-    assert len(project_1_results.entries) == 3
-    assert project_1_results.entries[0].date_str == "Wed 1 Jan 2025"
-    assert project_1_results.entries[0].title == "First project day"
-    assert project_1_results.entries[0].lines_written == 3
+    assert len(project_1_results.lines_written) == 3
+    date_title: tuple[str, str] = ("First project day", "Wed 1 Jan 2025")
+    assert date_title in project_1_results.lines_written
+    assert project_1_results.lines_written[date_title] == 3
 
     assert "What if we have no hyphen" in results.projects
     assert len(results.days) == 4

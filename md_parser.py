@@ -136,7 +136,7 @@ class NoteFile:
                     split_state.project_file.write(f"# {split_state.project_name}\n\n")
                     project_details.created = True
 
-                # results.projects[split_state.project_name] = project_details
+                results.projects[split_state.project_name] = project_details
 
                 # write the title line to the file
                 # using the week_num as the date if we don't have a date_str
@@ -168,6 +168,7 @@ class NoteFile:
                 project_details.lines_written[
                     split_state.title, split_state.date_str
                 ] = lines + 1
+                results.projects[split_state.project_name] = project_details
 
             # ignore the line since we haven't handled it above
             else:
