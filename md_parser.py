@@ -93,6 +93,7 @@ class NoteFile:
             if line_num == 1:
                 log.debug(f"line {line_num}: H1 Week heading")
                 results.week_num = NoteFile.validate_weekly_heading(line)
+                split_state.date_str = results.week_num
 
             # if line is a H1 heading,
             elif line.startswith(Heading.H1):
@@ -149,6 +150,8 @@ class NoteFile:
                 project_details.lines_written[
                     (split_state.title, split_state.date_str)
                 ] = 0
+
+                results.days.add(split_state.date_str)
 
             # if we have a project name then write the file to it
             elif split_state.project_name:
