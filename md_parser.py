@@ -131,11 +131,14 @@ class NoteFile:
                 )
                 if (project_filename).exists():
                     split_state.project_file = open(project_filename, "a")
+                    log.debug(f"File: {project_filename} EXISTS")
                     # project_details.created = False
                 else:
                     split_state.project_file = open(project_filename, "a")
-                    split_state.project_file.write(f"# {split_state.project_name}\n\n")
                     project_details.created = True
+                    log.debug(f"File: {project_filename} CREATED")
+
+                    split_state.project_file.write(f"# {split_state.project_name}\n\n")
 
                 results.projects[split_state.project_name] = project_details
 
