@@ -18,6 +18,7 @@ def test_split_file(week_1: NoteFile) -> None:
 
     assert "Project 1" in results.projects
     project_1_results: ProjectFileDetails = results.projects["Project 1"]
+    assert project_1_results.created
     assert len(project_1_results.lines_written) == 3
     date_title: tuple[str, str] = ("First project day", "Wed 1 Jan 2025")
     assert date_title in project_1_results.lines_written
