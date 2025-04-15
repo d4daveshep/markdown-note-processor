@@ -1,6 +1,6 @@
+import argparse
 import logging
 import re
-import sys
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import StrEnum
@@ -255,11 +255,46 @@ class NoteFile:
         return date_str
 
 
-if __name__ == "__main__":
-    if len(sys.argv) > 1:
-        note_filepath: str = sys.argv[1]
+# if __name__ == "__main__":
+#     if len(sys.argv) > 1:
+#         note_filepath: str = sys.argv[1]
+#
+#         weekly_notefile: NoteFile = NoteFile(Path(note_filepath))
+#         results: SplitResults = weekly_notefile.split_file()
+#         print("\nCompleted\n")
+#         print(results)
 
-        weekly_notefile: NoteFile = NoteFile(Path(note_filepath))
-        results: SplitResults = weekly_notefile.split_file()
-        print("\nCompleted\n")
-        print(results)
+
+def main() -> None:
+    # Create the parser
+    parser: argparse.ArgumentParser = argparse.ArgumentParser(
+        description="Split my weekly markdown notes into separate files"
+    )
+
+    # Add arguments
+    parser.add_argument("filename", help="The file to process")
+    parser.add_argument(
+        "-v", "--verbose", action="store_true", help="Increase output verbosity"
+    )
+    parser.add_argument(
+        "-s",
+        "--dry-run",
+        action="store_true",
+        help="Simulate the split with a dry run that doesn't create or write any files",
+    )
+
+    # Parse arguments
+    args = parser.parse_args()
+
+    # Use the arguments in your program
+    if args.verbose:
+        print(f"Processing {args.filename} with verbosity enabled")
+    else:
+        print(f"Processing {args.filename}")
+    if args.dry_run:
+        print("Doing a dry-run only")
+    # Your file processing code would go here
+
+
+if __name__ == "__main__":
+    main()
