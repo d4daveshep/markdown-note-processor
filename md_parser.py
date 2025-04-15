@@ -26,13 +26,6 @@ class SplitState:
     title: str = ""
 
 
-# @dataclass
-# class NoteSummary:
-#     title: str
-#     date_str: str
-#     lines_written: int = 0
-
-
 @dataclass
 class ProjectFileDetails:
     name: str
@@ -79,11 +72,6 @@ class NoteFile:
         """
         results: SplitResults = SplitResults(lines_procesed=0)
         split_state: SplitState = SplitState()
-        # date_str: str = ""
-        # project_name: str = ""
-        # title: str = ""
-        # week_num: str = ""
-        # project_file: TextIOWrapper = open("/dev/null")
 
         log.debug("START")
 
@@ -125,10 +113,13 @@ class NoteFile:
                 # close the previous project file and open/create the new one for appending text
                 split_state.project_file.close()
 
-                # if the file already exists then just open it, otherwise create it and write the project name as a H1 heading
+                # construct the full filepath/name for the project file
                 project_filename: Path = self.file_directory / Path(
                     split_state.project_name + ".md"
                 )
+
+                # if the file already exists then just open it,
+                # otherwise create it and write the project name as a H1 heading
                 if (project_filename).exists():
                     split_state.project_file = open(project_filename, "a")
                     log.debug(f"File: {project_filename} EXISTS")
@@ -140,6 +131,7 @@ class NoteFile:
 
                     split_state.project_file.write(f"# {split_state.project_name}\n\n")
 
+                # store the project file details in results
                 results.projects[split_state.project_name] = project_details
 
                 # write the title line to the file
@@ -164,16 +156,24 @@ class NoteFile:
 
                 split_state.project_file.write(line + "\n")
 
+                # get the project file details, create one if it doesn't exist
                 project_details = results.projects.get(
                     split_state.project_name,
                     ProjectFileDetails(name=split_state.project_name),
                 )
+
+                # get the current number of lines written to the project file for this note
+                # set it to zero if we've not written to the file yet.
                 lines: int = project_details.lines_written.get(
                     (split_state.title, split_state.date_str), 0
                 )
+
+                # increment the number of lines written for this note
                 project_details.lines_written[
                     split_state.title, split_state.date_str
                 ] = lines + 1
+
+                # save the project details in the results
                 results.projects[split_state.project_name] = project_details
 
             # ignore the line since we haven't handled it above
