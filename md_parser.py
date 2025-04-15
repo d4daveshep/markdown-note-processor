@@ -6,6 +6,7 @@ from datetime import datetime
 from enum import StrEnum
 from io import TextIOWrapper
 from pathlib import Path
+from typing import NamedTuple
 
 import structlog
 
@@ -15,6 +16,11 @@ structlog.configure(wrapper_class=structlog.make_filtering_bound_logger(logging.
 
 class FormatException(Exception):
     pass
+
+
+class CommandLineArguments(NamedTuple):
+    filename: str
+    dry_run: bool = False
 
 
 @dataclass
@@ -265,10 +271,29 @@ class NoteFile:
 #         print(results)
 
 
+def parse_args(argv: list[str] | None = None) -> CommandLineArguments:
+    parser: argparse.ArgumentParser = argparse.ArgumentParser(
+        description="Split my weekly markdown notes into separate project files"
+    )
+    parser.add_argument("filename", help="The file to process")
+    parser.add_argument(
+        "-s",
+        "--dry-run",
+        action="store_true",
+        help="Simulate the split with a dry run that doesn't create or write any files",
+    )
+    args = parser.parse_args(argv)
+    return CommandLineArguments(filename=args.filename, dry_run=args.dry_run)
+
+
 def main() -> None:
+    """
+    This is the main entry point of the program
+    """
+
     # Create the parser
     parser: argparse.ArgumentParser = argparse.ArgumentParser(
-        description="Split my weekly markdown notes into separate files"
+        description="Split my weekly markdown notes into separate project files"
     )
 
     # Add arguments
