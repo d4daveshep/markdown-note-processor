@@ -18,7 +18,7 @@ def test_load_notefile(week_1: NoteFile) -> None:
 
 def test_split_file(week_1: NoteFile) -> None:
     results: SplitResults = week_1.split_file()
-    assert results.lines_procesed == 54
+    assert results.lines_processed == 54
     assert results.week_num == "Week 01 2025"
     assert len(results.projects) == 5
 
@@ -27,7 +27,7 @@ def test_split_file(week_1: NoteFile) -> None:
     assert project_1_results.created
     assert len(project_1_results.lines_written) == 3
     title_date: TitleDate = TitleDate(
-        title="First project day", date_str="Wed 1 Jan 2025"
+        title="First project day", date_str="Wed 01 Jan 2025"
     )
     assert title_date in project_1_results.lines_written
     assert project_1_results.lines_written[title_date] == 3
@@ -35,7 +35,7 @@ def test_split_file(week_1: NoteFile) -> None:
     assert "What if we have no hyphen" in results.projects
     assert len(results.days) == 4
     assert "Week 01 2025" in results.days
-    assert "Thu 2 Jan 2025" in results.days
+    assert "Thu 02 Jan 2025" in results.days
     assert "Non-Date stuff" not in results.days
 
 

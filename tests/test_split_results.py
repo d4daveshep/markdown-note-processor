@@ -8,9 +8,9 @@ def test_create_empty_split_results() -> None:
 
 def test_increment_lines_processed() -> None:
     results: SplitResults = SplitResults()
-    assert results.lines_procesed == 0
-    results.lines_procesed += 1
-    assert results.lines_procesed == 1
+    assert results.lines_processed == 0
+    results.lines_processed += 1
+    assert results.lines_processed == 1
 
 
 def test_project_file_created_appended_flag() -> None:

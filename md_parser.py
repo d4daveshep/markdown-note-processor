@@ -47,7 +47,7 @@ class ProjectFileDetails:
 
 @dataclass
 class SplitResults:
-    lines_procesed: int = 0
+    lines_processed: int = 0
     week_num: str = ""
     top_heading: str = ""
     projects: dict[str, ProjectFileDetails] = field(default_factory=dict)
@@ -69,9 +69,9 @@ class SplitResults:
                 output += "[ exists ]\n"
         output += "-------------------------------\n"
 
-        output += "Notes entries written:\n"
+        output += "\nNotes entries written:\n"
         for project_name, details in sorted(self.projects.items()):
-            output += f"\nProject: {project_name}:\n"
+            output += f"\nProject file: {project_name}:\n"
             for title_date, lines in details.lines_written.items():
                 output += f'On {title_date[1]}, topic "{title_date[0]}", wrote {lines} lines\n'
         output += "-------------------------------\n"
@@ -108,7 +108,7 @@ class NoteFile:
 
         Return the summary results in a SplitResults object
         """
-        results: SplitResults = SplitResults(lines_procesed=0)
+        results: SplitResults = SplitResults(lines_processed=0)
         split_state: SplitState = SplitState()
 
         log.debug("START")
@@ -226,7 +226,7 @@ class NoteFile:
             else:
                 log.debug(f"line {line_num}: IGNORED")
 
-            results.lines_procesed += 1
+            results.lines_processed += 1
 
         split_state.project_file.close()
         log.debug("END")

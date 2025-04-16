@@ -1,10 +1,10 @@
 # Project 1
 
-## Wed 1 Jan 2025: First project day
+## Wed 01 Jan 2025: First project day
 
 This is an item from day 1 of project 1.
 
-## Thu 2 Jan 2025: Second project day
+## Thu 02 Jan 2025: Second project day
 
 Here's what happened in day 2 of the project
 
@@ -18,7 +18,7 @@ Here's some text under the sub-heading
 1. number 1
 2. number 2
 
-## Fri 3 Jan 2025: last day of the week
+## Fri 03 Jan 2025: last day of the week
 
 TGIF!
 

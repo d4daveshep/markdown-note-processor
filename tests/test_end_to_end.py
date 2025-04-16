@@ -15,7 +15,7 @@ def test_split_first_weekly_file(week_1: NoteFile, temp_dir: Path) -> None:
             f"{file} differs"
         )
 
-    assert results.lines_procesed == 54
+    assert results.lines_processed == 54
 
 
 def test_split_file_dry_run(week_1: NoteFile, temp_dir: Path) -> None:
@@ -28,20 +28,6 @@ def test_split_file_dry_run(week_1: NoteFile, temp_dir: Path) -> None:
         assert not Path(temp_dir / file).exists(), f"{file} was found"
 
 
-def test_split_second_weekly_file() -> None:
-    # specify the file and the directory to work in
-
-    # copy the file to the directory
-
-    # parse the file
-
-    # check the file structure
-
-    # split the file
-
-    # check the correct files are created or updated
-
-    # check the contents of the files matches expected contents
-
-    # delete the directory
-    pass
+def test_split_second_weekly_file(week_2: NoteFile, temp_dir: Path) -> None:
+    results: SplitResults = week_2.split_file()
+    assert results.lines_processed == 38
