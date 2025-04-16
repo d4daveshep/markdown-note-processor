@@ -1,6 +1,5 @@
 import argparse
 import logging
-import pprint
 import re
 from dataclasses import dataclass, field
 from datetime import datetime
@@ -50,8 +49,34 @@ class ProjectFileDetails:
 class SplitResults:
     lines_procesed: int = 0
     week_num: str = ""
+    top_heading: str = ""
     projects: dict[str, ProjectFileDetails] = field(default_factory=dict)
     days: set[str] = field(default_factory=set)
+
+    def __str__(self) -> str:
+        output = ""
+        output += "\n======== Split Results ========\n"
+        output += self.top_heading
+        output += "\n-------------------------------\n"
+        output += f"Processed {self.lines_procesed} lines\n"
+
+        output += "Project files written to:\n"
+        for project_name, details in sorted(self.projects.items()):
+            output += f"- {project_name}\t"
+            if details.created:
+                output += "[ CREATED ]\n"
+            else:
+                output += "[ exists ]\n"
+        output += "-------------------------------\n"
+
+        output += "Notes entries written:\n"
+        for project_name, details in sorted(self.projects.items()):
+            output += f"\nProject: {project_name}:\n"
+            for title_date, lines in details.lines_written.items():
+                output += f'On {title_date[1]}, topic "{title_date[0]}", wrote {lines} lines\n'
+        output += "-------------------------------\n"
+
+        return output
 
 
 class Heading(StrEnum):
@@ -94,6 +119,7 @@ class NoteFile:
             if line_num == 1:
                 log.debug(f"line {line_num}: H1 Week heading")
                 results.week_num = NoteFile.validate_weekly_heading(line)
+                results.top_heading = line[2:]
                 split_state.date_str = results.week_num
 
             # if line is a H1 heading,
@@ -318,9 +344,11 @@ def main() -> None:
 
     # Create the Notefile and do the splitting
     weekly_notefile: NoteFile = NoteFile(Path(args.filename))
-    weekly_notefile.dry_run = args.dry_run
+    if args.dry_run:
+        print("** DRY RUN **")
+        weekly_notefile.dry_run = args.dry_run
     results: SplitResults = weekly_notefile.split_file()
-    pprint.pprint(f"results=\n{results}")
+    print(results)
 
 
 if __name__ == "__main__":
