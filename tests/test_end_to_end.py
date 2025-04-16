@@ -18,6 +18,16 @@ def test_split_first_weekly_file(week_1: NoteFile, temp_dir: Path) -> None:
     assert results.lines_procesed == 54
 
 
+def test_split_file_dry_run(week_1: NoteFile, temp_dir: Path) -> None:
+    week_1.dry_run = True
+    week_1.split_file()
+
+    # check project files are NOT created
+    project_files: list[str] = [f"Project {n}.md" for n in range(0, 3)]
+    for file in project_files:
+        assert not Path(temp_dir / file).exists(), f"{file} was found"
+
+
 def test_split_second_weekly_file() -> None:
     # specify the file and the directory to work in
 

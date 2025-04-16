@@ -70,6 +70,7 @@ class NoteFile:
         if not filepath.exists():
             raise FileNotFoundError(f"{filepath}")
         self.file_directory: Path = filepath.parent
+        self.dry_run: bool = False
         with open(filepath, "r") as file:
             data: str = file.read()
             self._lines: list[str] = data.split("\n")
@@ -133,15 +134,20 @@ class NoteFile:
                 # if the file already exists then just open it,
                 # otherwise create it and write the project name as a H1 heading
                 if (project_filename).exists():
-                    split_state.project_file = open(project_filename, "a")
+                    if not self.dry_run:
+                        split_state.project_file = open(project_filename, "a")
                     log.debug(f"File: {project_filename} EXISTS")
                     # project_details.created = False
                 else:
-                    split_state.project_file = open(project_filename, "a")
+                    if not self.dry_run:
+                        split_state.project_file = open(project_filename, "a")
                     project_details.created = True
                     log.debug(f"File: {project_filename} CREATED")
 
-                    split_state.project_file.write(f"# {split_state.project_name}\n\n")
+                    if not self.dry_run:
+                        split_state.project_file.write(
+                            f"# {split_state.project_name}\n\n"
+                        )
 
                 # store the project file details in results
                 results.projects[split_state.project_name] = project_details
@@ -151,9 +157,10 @@ class NoteFile:
                 if split_state.date_str == "":
                     split_state.date_str = split_state.week_num
 
-                split_state.project_file.write(
-                    f"## {split_state.date_str}: {split_state.title}\n"
-                )
+                if not self.dry_run:
+                    split_state.project_file.write(
+                        f"## {split_state.date_str}: {split_state.title}\n"
+                    )
                 project_details.lines_written[
                     (split_state.title, split_state.date_str)
                 ] = 0
@@ -166,7 +173,8 @@ class NoteFile:
                     f"line {line_num}: Appending to project: {split_state.project_name}"
                 )
 
-                split_state.project_file.write(line + "\n")
+                if not self.dry_run:
+                    split_state.project_file.write(line + "\n")
 
                 # get the project file details, create one if it doesn't exist
                 project_details = results.projects.get(
@@ -310,6 +318,7 @@ def main() -> None:
 
     # Create the Notefile and do the splitting
     weekly_notefile: NoteFile = NoteFile(Path(args.filename))
+    weekly_notefile.dry_run = args.dry_run
     results: SplitResults = weekly_notefile.split_file()
     pprint.pprint(f"results=\n{results}")
 
