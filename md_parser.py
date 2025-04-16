@@ -1,5 +1,6 @@
 import argparse
 import logging
+import pprint
 import re
 from dataclasses import dataclass, field
 from datetime import datetime
@@ -21,6 +22,7 @@ class FormatException(Exception):
 class CommandLineArguments(NamedTuple):
     filename: str
     dry_run: bool = False
+    debug: bool = False
 
 
 @dataclass
@@ -32,12 +34,16 @@ class SplitState:
     title: str = ""
 
 
+class TitleDate(NamedTuple):
+    title: str = ""
+    date_str: str = ""
+
+
 @dataclass
 class ProjectFileDetails:
     name: str
-    date_str: str = ""
     created: bool = False
-    lines_written: dict[tuple[str, str], int] = field(default_factory=dict)
+    lines_written: dict[TitleDate, int] = field(default_factory=dict)
 
 
 @dataclass
@@ -189,6 +195,7 @@ class NoteFile:
             results.lines_procesed += 1
 
         split_state.project_file.close()
+        log.debug("END")
         return results
 
     @property
@@ -277,48 +284,34 @@ def parse_args(argv: list[str] | None = None) -> CommandLineArguments:
     )
     parser.add_argument("filename", help="The file to process")
     parser.add_argument(
+        "-d",
+        "--debug",
+        action="store_true",
+        help="Increase output verbosity with debug output",
+    )
+    parser.add_argument(
         "-s",
         "--dry-run",
         action="store_true",
         help="Simulate the split with a dry run that doesn't create or write any files",
     )
     args = parser.parse_args(argv)
-    return CommandLineArguments(filename=args.filename, dry_run=args.dry_run)
+    return CommandLineArguments(
+        filename=args.filename, dry_run=args.dry_run, debug=args.debug
+    )
 
 
 def main() -> None:
     """
     This is the main entry point of the program
     """
-
-    # Create the parser
-    parser: argparse.ArgumentParser = argparse.ArgumentParser(
-        description="Split my weekly markdown notes into separate project files"
-    )
-
-    # Add arguments
-    parser.add_argument("filename", help="The file to process")
-    parser.add_argument(
-        "-v", "--verbose", action="store_true", help="Increase output verbosity"
-    )
-    parser.add_argument(
-        "-s",
-        "--dry-run",
-        action="store_true",
-        help="Simulate the split with a dry run that doesn't create or write any files",
-    )
-
     # Parse arguments
-    args = parser.parse_args()
+    args: CommandLineArguments = parse_args()
 
-    # Use the arguments in your program
-    if args.verbose:
-        print(f"Processing {args.filename} with verbosity enabled")
-    else:
-        print(f"Processing {args.filename}")
-    if args.dry_run:
-        print("Doing a dry-run only")
-    # Your file processing code would go here
+    # Create the Notefile and do the splitting
+    weekly_notefile: NoteFile = NoteFile(Path(args.filename))
+    results: SplitResults = weekly_notefile.split_file()
+    pprint.pprint(f"results=\n{results}")
 
 
 if __name__ == "__main__":
