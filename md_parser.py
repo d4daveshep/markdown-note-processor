@@ -58,7 +58,7 @@ class SplitResults:
         output += "\n======== Split Results ========\n"
         output += self.top_heading
         output += "\n-------------------------------\n"
-        output += f"Processed {self.lines_procesed} lines\n"
+        output += f"Processed {self.lines_processed} lines\n"
 
         output += "Project files written to:\n"
         for project_name, details in sorted(self.projects.items()):
@@ -188,7 +188,7 @@ class NoteFile:
                         f"## {split_state.date_str}: {split_state.title}\n"
                     )
                 project_details.lines_written[
-                    (split_state.title, split_state.date_str)
+                    TitleDate(title=split_state.title, date_str=split_state.date_str)
                 ] = 0
 
                 results.days.add(split_state.date_str)
@@ -211,12 +211,12 @@ class NoteFile:
                 # get the current number of lines written to the project file for this note
                 # set it to zero if we've not written to the file yet.
                 lines: int = project_details.lines_written.get(
-                    (split_state.title, split_state.date_str), 0
+                    TitleDate(title=split_state.title, date_str=split_state.date_str), 0
                 )
 
                 # increment the number of lines written for this note
                 project_details.lines_written[
-                    split_state.title, split_state.date_str
+                    TitleDate(title=split_state.title, date_str=split_state.date_str)
                 ] = lines + 1
 
                 # save the project details in the results

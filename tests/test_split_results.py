@@ -1,4 +1,4 @@
-from md_parser import ProjectFileDetails, SplitResults
+from md_parser import ProjectFileDetails, SplitResults, TitleDate
 
 
 def test_create_empty_split_results() -> None:
@@ -34,6 +34,6 @@ def test_project_lines_written() -> None:
     pfd: ProjectFileDetails = ProjectFileDetails(name="Project 1")
     assert len(pfd.lines_written) == 0
 
-    pfd.lines_written[("Title", "Date")] = 0
-    pfd.lines_written[("Title", "Date")] += 1
-    assert pfd.lines_written[("Title", "Date")] == 1
+    pfd.lines_written[TitleDate(title="Title", date_str="Date")] = 0
+    pfd.lines_written[TitleDate(title="Title", date_str="Date")] += 1
+    assert pfd.lines_written[TitleDate(title="Title", date_str="Date")] == 1
