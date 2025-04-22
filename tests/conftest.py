@@ -30,7 +30,7 @@ def temp_dir() -> Generator[Path]:
 @pytest.fixture
 def week_1(temp_dir: Path) -> Generator[NoteFile]:
     # specify the file and the directory to work in
-    src_md_filepath: Path = Path("tests/Test Week 1.md")
+    src_md_filepath: Path = Path("tests/week_1_files/Test Week 1.md")
 
     # copy the weekly file to test directory
     md_filepath: Path = temp_dir / src_md_filepath.name
@@ -45,7 +45,7 @@ def week_1(temp_dir: Path) -> Generator[NoteFile]:
 @pytest.fixture
 def week_2(temp_dir: Path) -> Generator[NoteFile]:
     # specify the file and the directory to work in
-    src_md_filepath: Path = Path("tests/Test Week 2.md")
+    src_md_filepath: Path = Path("tests/week_2_files/Test Week 2.md")
 
     # copy the weekly file to test directory
     md_filepath: Path = temp_dir / src_md_filepath.name
