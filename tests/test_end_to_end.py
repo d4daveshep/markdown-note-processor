@@ -34,8 +34,8 @@ def test_split_second_weekly_file(
     results: SplitResults = week_2.split_file()
     assert results.lines_processed == 38
 
-    # check project files exist and are written as expected
-    project_files: list[str] = [f"Project {n}.md" for n in range(0, 4)]
+    # check project files existand are written as expected
+    project_files: list[str] = [f"Project {n}.md" for n in range(0, 5)]
     for file in project_files:
         assert Path(temp_dir / file).exists(), f"{file} not found"
         # assert filecmp.cmp(Path(f"./tests/{file}"), Path(temp_dir / file)), (
