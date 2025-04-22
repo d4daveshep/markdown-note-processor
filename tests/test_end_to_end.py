@@ -41,7 +41,3 @@ def test_split_second_weekly_file(
         assert filecmp.cmp(
             Path(f"./tests/week_2_files/{file}"), Path(temp_dir / file)
         ), f"{file} differs"
-
-    assert False, (
-        "add some test functionality here,  e.g. are the files correct?  which got amended vs created"
-    )

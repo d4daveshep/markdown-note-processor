@@ -6,7 +6,7 @@ from md_parser import NoteFile
 
 
 def test_load_file() -> None:
-    md_filepath: Path = Path("tests/Test Week 1.md")
+    md_filepath: Path = Path("tests/week_1_files/Test Week 1.md")
     assert md_filepath.exists()
     md_parser: NoteFile = NoteFile(md_filepath)
     assert md_parser
