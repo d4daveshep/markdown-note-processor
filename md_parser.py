@@ -42,7 +42,7 @@ class TitleDate(NamedTuple):
 class ProjectFileDetails:
     name: str
     created: bool = False
-    lines_written: dict[TitleDate, int] = field(default_factory=dict)
+    lines_written: dict[TitleDate, int] = field(default_factory=dict[TitleDate, int])
 
 
 @dataclass
@@ -50,8 +50,10 @@ class SplitResults:
     lines_processed: int = 0
     week_num: str = ""
     top_heading: str = ""
-    projects: dict[str, ProjectFileDetails] = field(default_factory=dict)
-    days: set[str] = field(default_factory=set)
+    projects: dict[str, ProjectFileDetails] = field(
+        default_factory=dict[str, ProjectFileDetails]
+    )
+    days: set[str] = field(default_factory=set[str])
 
     def __str__(self) -> str:
         output = ""
