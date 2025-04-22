@@ -8,10 +8,10 @@ from io import TextIOWrapper
 from pathlib import Path
 from typing import NamedTuple
 
-import structlog
 
-log: structlog.BoundLogger = structlog.get_logger()
-structlog.configure(wrapper_class=structlog.make_filtering_bound_logger(logging.DEBUG))
+logging.basicConfig(format="%(asctime)s %(message)s")
+log = logging.getLogger(__name__)
+log.setLevel(logging.DEBUG)
 
 
 class FormatException(Exception):
@@ -300,16 +300,6 @@ class NoteFile:
             )
             date_str = ""
         return date_str
-
-
-# if __name__ == "__main__":
-#     if len(sys.argv) > 1:
-#         note_filepath: str = sys.argv[1]
-#
-#         weekly_notefile: NoteFile = NoteFile(Path(note_filepath))
-#         results: SplitResults = weekly_notefile.split_file()
-#         print("\nCompleted\n")
-#         print(results)
 
 
 def parse_args(argv: list[str] | None = None) -> CommandLineArguments:
