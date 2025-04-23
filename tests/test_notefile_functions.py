@@ -69,7 +69,7 @@ def test_split_project_name_heading(
 )
 def test_split_invalid_project_name_heading(h2_heading: str) -> None:
     with pytest.raises(FormatException):
-        project_name, title = NoteFile.split_project_name_heading(h2_heading)
+        NoteFile.split_project_name_heading(h2_heading)
 
 
 @pytest.mark.parametrize(
@@ -117,3 +117,27 @@ def test_ignore_non_date_heading() -> None:
 
 def test_notefile_directory_property(week_1: NoteFile) -> None:
     assert week_1.file_directory == Path("temp_test/")
+
+
+def test_split_file_again_does_not_write_any_lines(week_1: NoteFile) -> None:
+    week_1.split_file()
+    results: SplitResults = week_1.split_file()
+    assert results.lines_processed == 54
+    assert results.week_num == "Week 01 2025"
+    assert len(results.projects) == 5
+
+    assert "Project 1" in results.projects
+    project_1_results: ProjectFileDetails = results.projects["Project 1"]
+    assert not project_1_results.created
+    assert len(project_1_results.lines_written) == 3
+    title_date: TitleDate = TitleDate(
+        title="First project day", date_str="Wed 01 Jan 2025"
+    )
+    assert title_date in project_1_results.lines_written
+    assert project_1_results.lines_written[title_date] == 0
+
+    assert "What if we have no hyphen" in results.projects
+    assert len(results.days) == 4
+    assert "Week 01 2025" in results.days
+    assert "Thu 02 Jan 2025" in results.days
+    assert "Non-Date stuff" not in results.days

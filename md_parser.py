@@ -180,15 +180,18 @@ class NoteFile:
                 # store the project file details in results
                 results.projects[split_state.project_name] = project_details
 
-                # write the title line to the file
-                # using the week_num as the date if we don't have a date_str
+                # use the week_num as the date if we don't have a date_str
                 if split_state.date_str == "":
                     split_state.date_str = split_state.week_num
 
+                # build the title line we want to write
+                title_line: str = f"## {split_state.date_str}: {split_state.title}\n"
+
+                # TODO:check if we the project file already contains the title_line, skip this whole section if it does
+
+                # write the title line to the file
                 if not self.dry_run:
-                    split_state.project_file.write(
-                        f"## {split_state.date_str}: {split_state.title}\n"
-                    )
+                    split_state.project_file.write(title_line)
                 project_details.lines_written[
                     TitleDate(title=split_state.title, date_str=split_state.date_str)
                 ] = 0

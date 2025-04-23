@@ -34,10 +34,23 @@ def test_split_second_weekly_file(
     results: SplitResults = week_2.split_file()
     assert results.lines_processed == 38
 
-    # check project files existand are written as expected
+    # check project files exist and are written as expected
     project_files: list[str] = [f"Project {n}.md" for n in range(0, 5)]
     for file in project_files:
         assert Path(temp_dir / file).exists(), f"{file} not found"
         assert filecmp.cmp(
             Path(f"./tests/week_2_files/{file}"), Path(temp_dir / file)
+        ), f"{file} differs"
+
+
+def test_rerun_of_weekly_file_split(week_1: NoteFile, temp_dir: Path) -> None:
+    week_1.split_file()
+    week_1.split_file()
+
+    # check project files are created but content not duplicated on second split
+    project_files: list[str] = [f"Project {n}.md" for n in range(0, 4)]
+    for file in project_files:
+        assert Path(temp_dir / file).exists(), f"{file} not found"
+        assert filecmp.cmp(
+            Path(f"./tests/week_1_files/{file}"), Path(temp_dir / file)
         ), f"{file} differs"
