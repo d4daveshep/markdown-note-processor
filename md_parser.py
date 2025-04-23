@@ -96,13 +96,19 @@ class NoteFile:
     def __init__(self, filepath: Path):
         if not filepath.exists():
             raise FileNotFoundError(f"{filepath}")
+        # TODO: add output_directory as an optional init parameter and use it instead of file_directory
         self.file_directory: Path = filepath.parent
         self.dry_run: bool = False
+        # TODO: move the file reading to a separate function so I can reuse it
         with open(filepath, "r") as file:
             data: str = file.read()
             self._lines: list[str] = data.split("\n")
 
         NoteFile.validate_weekly_heading(self._lines[0])
+
+        # TODO: scan the file for valid project file name
+        # TODO: for each project file, build a cache of the h2_heading title_date lines
+        # so we can see if we've already split the notefile into project files
 
     def split_file(self) -> SplitResults:
         """
