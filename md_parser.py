@@ -288,7 +288,7 @@ class NoteFile:
             project_name = h2_heading[3:hyphen_index]
             title = h2_heading[hyphen_index + 1 :]
         if project_name == "":
-            raise FormatException('Invalid format, expecting "# <project name>"')
+            raise FormatException('Invalid format, expecting "## <project name>"')
         log.debug(f'Project_name="{project_name}", Title="{title}"')
         return project_name.strip(), title.strip()
 

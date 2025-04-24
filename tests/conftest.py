@@ -55,3 +55,10 @@ def week_2(temp_dir: Path) -> Generator[NoteFile]:
     note_file: NoteFile = NoteFile(md_filepath)
 
     yield note_file
+
+
+@pytest.fixture
+def project_file_1() -> Path:
+    project_file: Path = Path("tests/week_2_files/Project 1.md")
+    assert project_file.exists()
+    return project_file
