@@ -1,5 +1,10 @@
 from pathlib import Path
-from md_parser import Heading
+from enum import StrEnum
+
+
+class Heading(StrEnum):
+    H1 = "# "
+    H2 = "## "
 
 
 def read_file_to_str_list(filepath: Path) -> list[str]:

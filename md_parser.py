@@ -3,10 +3,11 @@ import logging
 import re
 from dataclasses import dataclass, field
 from datetime import datetime
-from enum import StrEnum
 from io import TextIOWrapper
 from pathlib import Path
 from typing import NamedTuple
+
+from project_file_utils import read_file_to_str_list, Heading
 
 
 logging.basicConfig(format="%(asctime)s %(message)s")
@@ -81,11 +82,6 @@ class SplitResults:
         return output
 
 
-class Heading(StrEnum):
-    H1 = "# "
-    H2 = "## "
-
-
 class NoteFile:
     """
     Note file parser to parse my weekly notes and split them into separate files.
@@ -99,10 +95,7 @@ class NoteFile:
         # TODO: add output_directory as an optional init parameter and use it instead of file_directory
         self.file_directory: Path = filepath.parent
         self.dry_run: bool = False
-        # TODO: move the file reading to a separate function so I can reuse it
-        with open(filepath, "r") as file:
-            data: str = file.read()
-            self._lines: list[str] = data.split("\n")
+        self._lines: list[str] = read_file_to_str_list(filepath)
 
         NoteFile.validate_weekly_heading(self._lines[0])
 
