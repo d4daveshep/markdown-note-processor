@@ -7,7 +7,7 @@ from io import TextIOWrapper
 from pathlib import Path
 from typing import NamedTuple
 
-from project_file_utils import read_file_to_str_list, Heading
+from project_file_utils import ProjectFileHeadings, read_file_to_str_list, Heading
 
 
 logging.basicConfig(format="%(asctime)s %(message)s")
@@ -99,10 +99,6 @@ class NoteFile:
 
         NoteFile.validate_weekly_heading(self._lines[0])
 
-        # TODO: scan the file for valid project file name
-        # TODO: for each project file, build a cache of the h2_heading title_date lines
-        # so we can see if we've already split the notefile into project files
-
     def split_file(self) -> SplitResults:
         """
         Split the file based on the Parsing Rules.md file
@@ -113,6 +109,12 @@ class NoteFile:
         split_state: SplitState = SplitState()
 
         log.debug("START")
+
+        # build the cache of project_file_headings so we can detect if the weekly file
+        # has already been split
+        project_file_headings: ProjectFileHeadings = ProjectFileHeadings(
+            directory=self.file_directory
+        )
 
         # loop through the lines, use 1-based line numbering to ease debugging and output
         for line_num, line in enumerate(self._lines, start=1):
@@ -185,17 +187,29 @@ class NoteFile:
 
                 # build the title line we want to write
                 title_line: str = f"## {split_state.date_str}: {split_state.title}\n"
+                log.debug(f"title_line: {title_line}")
 
-                # TODO:check if we the project file already contains the title_line, skip this whole section if it does
+                # check if the project file already contains the title_line and
+                # skip this whole section if it does
+                if project_file_headings.contains(
+                    project_filename=split_state.project_name, h2_heading=title_line
+                ):
+                    # set the project_name to "" so the following lines get ignored
+                    log.debug(
+                        f'File: {project_filename} already contains heading: "{title_line}"'
+                    )
+                    split_state.project_name = ""
+                else:
+                    # write the title line to the file
+                    if not self.dry_run:
+                        split_state.project_file.write(title_line)
+                    project_details.lines_written[
+                        TitleDate(
+                            title=split_state.title, date_str=split_state.date_str
+                        )
+                    ] = 0
 
-                # write the title line to the file
-                if not self.dry_run:
-                    split_state.project_file.write(title_line)
-                project_details.lines_written[
-                    TitleDate(title=split_state.title, date_str=split_state.date_str)
-                ] = 0
-
-                results.days.add(split_state.date_str)
+                    results.days.add(split_state.date_str)
 
             # if we have a project name then write the file to it
             elif split_state.project_name:

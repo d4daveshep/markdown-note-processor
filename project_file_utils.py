@@ -1,5 +1,10 @@
 from pathlib import Path
+import logging
 from enum import StrEnum
+
+logging.basicConfig(format="%(asctime)s %(message)s")
+log = logging.getLogger(__name__)
+log.setLevel(logging.DEBUG)
 
 
 class Heading(StrEnum):
@@ -30,6 +35,7 @@ class ProjectFileHeadings:
         self._cache: dict[str, set[str]] = {}
         self.directory = directory
         self.read_project_files(directory)
+        log.debug(f"ProjectFileHeadings._cache=\n{self._cache}")
 
     def read_project_files(self, directory: Path) -> int:
         self._cache = {}
@@ -39,6 +45,12 @@ class ProjectFileHeadings:
 
     def contains(self, project_filename: str, h2_heading: str) -> bool:
         try:
-            return h2_heading in self._cache[project_filename]
+            result: bool = h2_heading in self._cache[project_filename]
+            if result:
+                log.debug(f"{project_filename} CONTAINS {h2_heading}")
+            else:
+                log.debug(f"{project_filename} NOT contains {h2_heading}")
+            return result
         except KeyError:
+            log.debug(f"{project_filename} NOT contains {h2_heading}")
             return False
