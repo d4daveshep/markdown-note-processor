@@ -191,6 +191,7 @@ class NoteFile:
 
                 # check if the project file already contains the title_line and
                 # skip this whole section if it does
+                # FIXME: move this logic earlier when we detect we already have a project_filename existing
                 if project_file_headings.contains(
                     project_filename=split_state.project_name, h2_heading=title_line
                 ):
