@@ -141,3 +141,15 @@ def test_split_file_again_does_not_write_any_lines(week_1: NoteFile) -> None:
     assert "Week 01 2025" in results.days
     assert "Thu 02 Jan 2025" in results.days
     assert "Non-Date stuff" not in results.days
+
+
+# start functions needed for split_files
+def test_process_line_1_heading() -> None:
+    week_num: str = ""
+    top_heading: str = ""
+    line_1 = "# Week 01 2025: 1 Jan - 7 Jan"
+
+    week_num, top_heading = NoteFile.process_line_1_heading(line=line_1)
+
+    assert week_num == "Week 01 2025"
+    assert top_heading == "Week 01 2025: 1 Jan - 7 Jan"

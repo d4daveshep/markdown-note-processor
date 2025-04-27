@@ -121,8 +121,11 @@ class NoteFile:
             # process the first line separately as it contains the week number we need
             if line_num == 1:
                 log.debug(f"line {line_num}: H1 Week heading")
-                results.week_num = NoteFile.validate_weekly_heading(line)
-                results.top_heading = line[2:]
+                results.week_num, results.top_heading = NoteFile.process_line_1_heading(
+                    line
+                )
+                # results.week_num = NoteFile.validate_weekly_heading(line)
+                # results.top_heading = line[2:]
                 split_state.date_str = results.week_num
 
             # if line is a H1 heading,
@@ -254,6 +257,10 @@ class NoteFile:
     @property
     def num_lines_parsed(self) -> int:
         return len(self._lines)
+
+    @staticmethod
+    def process_line_1_heading(line: str) -> tuple[str, str]:
+        return (NoteFile.validate_weekly_heading(h1_heading=line), line[2:])
 
     @staticmethod
     def validate_weekly_heading(h1_heading: str) -> str:
