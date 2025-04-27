@@ -121,14 +121,13 @@ class NoteFile:
             # process the first line separately as it contains the week number we need
             if line_num == 1:
                 log.debug(f"line {line_num}: H1 Week heading")
+
                 results.week_num, results.top_heading = NoteFile.process_line_1_heading(
                     line
                 )
-                # results.week_num = NoteFile.validate_weekly_heading(line)
-                # results.top_heading = line[2:]
                 split_state.date_str = results.week_num
 
-            # if line is a H1 heading,
+            # if line is a H1 heading, then it's a new day's notes to be written
             elif line.startswith(Heading.H1):
                 log.debug(f"line {line_num}: H1 heading: {line[2:]}")
 
@@ -140,7 +139,7 @@ class NoteFile:
                 split_state.project_name = ""
                 split_state.project_file.close()
 
-            # if line is a H2 heading,
+            # if line is a H2 heading, then it's the start of a new project note
             elif line.startswith(Heading.H2):
                 log.debug(f"line {line_num}: H2 heading: {line[3:]}")
 
