@@ -9,12 +9,23 @@ def test_notefile_reader():
     assert weekly_notes.h1_headings[0].name == "# Week 01 2025: 1 Jan - 7 Jan"
     assert weekly_notes.h1_headings[2].name == "# Thu 02 Jan 2025"
 
+    h1_heading_0: H1Heading = weekly_notes.h1_headings[0]
+    assert len(h1_heading_0.h2_headings) == 1
+
+    h1_heading_2: H1Heading = weekly_notes.h1_headings[2]
+    assert len(h1_heading_2.h2_headings) == 3
+
 
 def test_h1_heading():
     h1: H1Heading = H1Heading("test line")
     assert h1.name == "test line"
     assert h1.lines == []
     assert h1.h2_headings == []
+
+    h1.h2_headings.append(H2Heading("h2 heading"))
+    h1.lines.append("a new line")
+    assert len(h1.h2_headings) == 1
+    assert len(h1.lines) == 1
 
 
 def test_h2_heading():

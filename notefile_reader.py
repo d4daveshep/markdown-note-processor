@@ -24,9 +24,18 @@ class WeeklyNotes:
 
 def load_weekly_note_file(file: Path) -> WeeklyNotes:
     weekly_notes: WeeklyNotes = WeeklyNotes()
+    in_h1: bool = False
+    in_h2: bool = False
+
     lines: list[str] = read_file_to_str_list(file)
     for line in lines:
         if line.startswith(Heading.H1):
+            in_h1 = True
             h1_heading: H1Heading = H1Heading(line)
             weekly_notes.h1_headings.append(h1_heading)
+        if line.startswith(Heading.H2):
+            in_h2 = True
+            h2_heading: H2Heading = H2Heading(line)
+            h1_heading.h2_headings.append(h2_heading)
+
     return weekly_notes
