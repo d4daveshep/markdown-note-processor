@@ -1,5 +1,3 @@
-## Processing a H2 heading
-
 ### Purpose
 
 To open (get or create) a project file to write the lines following the H2 heading to.
