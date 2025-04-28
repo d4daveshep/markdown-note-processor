@@ -1,20 +1,26 @@
 import logging
+import pytest
 from pathlib import Path
-
-from notefile_reader import H1Heading, H2Heading, WeeklyNotes, load_weekly_note_file
+from weekly_notes import WeeklyNotes, H1Heading, H2Heading
+from notefile_reader import load_weekly_note_file
 
 logging.basicConfig(format="%(asctime)s %(message)s")
 log = logging.getLogger(__name__)
 log.setLevel(logging.DEBUG)
 
 
-def test_notefile_reader():
+@pytest.fixture
+def week_1_notes() -> WeeklyNotes:
     week_1_file: Path = Path("tests/week_1_files/Test Week 1.md")
-    weekly_notes: WeeklyNotes = load_weekly_note_file(file=week_1_file)
-    assert len(weekly_notes.h1_headings) == 5
-    assert weekly_notes.total_lines == 54
+    week_1_notes: WeeklyNotes = load_weekly_note_file(file=week_1_file)
+    return week_1_notes
 
-    h1_heading_0: H1Heading = weekly_notes.h1_headings[0]
+
+def test_notefile_reader(week_1_notes: WeeklyNotes):
+    assert len(week_1_notes.h1_headings) == 5
+    assert week_1_notes.total_lines == 54
+
+    h1_heading_0: H1Heading = week_1_notes.h1_headings[0]
     assert h1_heading_0.name == "# Week 01 2025: 1 Jan - 7 Jan"
     assert len(h1_heading_0.lines) == 1
     assert len(h1_heading_0.h2_headings) == 1
@@ -24,7 +30,7 @@ def test_notefile_reader():
     assert len(h2_heading.lines) == 3
     assert h2_heading.lines[1] == "This is an item prior to day 1."
 
-    h1_heading_2: H1Heading = weekly_notes.h1_headings[2]
+    h1_heading_2: H1Heading = week_1_notes.h1_headings[2]
     assert h1_heading_2.name == "# Thu 02 Jan 2025"
     assert len(h1_heading_2.lines) == 1
     assert len(h1_heading_2.h2_headings) == 3
@@ -48,8 +54,5 @@ def test_h2_heading():
     assert h2.lines == []
 
 
-def test_notefile_reader_count_lines_saved():
-    week_1_file: Path = Path("tests/week_1_files/Test Week 1.md")
-    weekly_notes: WeeklyNotes = load_weekly_note_file(file=week_1_file)
-
-    assert weekly_notes.count_lines_saved() == weekly_notes.total_lines
+def test_notefile_reader_count_lines_saved(week_1_notes: WeeklyNotes):
+    assert week_1_notes.count_lines_saved() == week_1_notes.total_lines

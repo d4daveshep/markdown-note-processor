@@ -1,43 +1,12 @@
 import logging
-from dataclasses import dataclass, field
 from pathlib import Path
 
 from project_file_utils import Heading, read_file_to_str_list
+from weekly_notes import H1Heading, H2Heading, WeeklyNotes
 
 logging.basicConfig(format="%(asctime)s %(message)s")
 log = logging.getLogger(__name__)
 log.setLevel(logging.DEBUG)
-
-
-@dataclass
-class H2Heading:
-    name: str
-    lines: list[str] = field(default_factory=list[str])
-
-
-@dataclass
-class H1Heading:
-    name: str
-    h2_headings: list[H2Heading] = field(default_factory=list[H2Heading])
-    lines: list[str] = field(default_factory=list[str])
-
-
-class WeeklyNotes:
-    def __init__(self) -> None:
-        self.h1_headings: list[H1Heading] = []
-        self.total_lines: int = 0
-
-    def count_lines_saved(self) -> int:
-        count: int = 0
-        # count += len(self.h1_headings)
-        # count += sum(len(h1.lines) for h1 in self.h1_headings)
-        for h1 in self.h1_headings:
-            count += 1
-            count += len(h1.lines)
-            for h2 in h1.h2_headings:
-                count += 1
-                count += len(h2.lines)
-        return count
 
 
 def load_weekly_note_file(file: Path) -> WeeklyNotes:
