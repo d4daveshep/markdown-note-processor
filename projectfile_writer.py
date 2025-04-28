@@ -1,14 +1,20 @@
 import logging
-from md_parser import NoteFile
+from md_parser import NoteFile, ProjectFileDetails
 from pathlib import Path
 
 from project_file_utils import ProjectFileHeadings
 from split_results import SplitResults
-from weekly_notes import WeeklyNotes
+from weekly_notes import H2Heading, WeeklyNotes
 
 logging.basicConfig(format="%(asctime)s %(message)s")
 log = logging.getLogger(__name__)
 log.setLevel(logging.DEBUG)
+
+
+def write_project_file(
+    h2_heading: H2Heading, date_str: str, projectfile_directory: Path
+) -> ProjectFileDetails:
+    return ProjectFileDetails(name="")
 
 
 def write_project_files(
@@ -32,9 +38,7 @@ def write_project_files(
             weekly_date_str: str = h1_heading.name[2:]
 
             for h2_heading in h1_heading.h2_headings:
-                write_project_file(
-                    h2_heading, projectfile_directory, projectfile_headings
-                )
+                write_project_file(h2_heading, weekly_date_str, projectfile_directory)
 
         else:
             date_str: str = NoteFile.validate_date_heading(h1_heading.name)
