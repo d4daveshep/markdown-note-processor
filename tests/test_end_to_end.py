@@ -1,11 +1,13 @@
 import filecmp
+from projectfile_writer import write_project_files
 from pathlib import Path
 
 from md_parser import NoteFile, SplitResults
+from weekly_notes import WeeklyNotes
 
 
-def test_split_first_weekly_file(week_1: NoteFile, temp_dir: Path) -> None:
-    results: SplitResults = week_1.split_file()
+def test_split_first_weekly_file(week_1_notes: WeeklyNotes, temp_dir: Path) -> None:
+    results: SplitResults = write_project_files(week_1_notes)
     assert results.lines_processed == 54
 
     # check project files are created and are written as expected

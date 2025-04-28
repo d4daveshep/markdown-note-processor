@@ -259,6 +259,13 @@ class NoteFile:
 
     @staticmethod
     def process_line_1_heading(line: str) -> tuple[str, str]:
+        """
+        Validate the first line of the file and return the week number and
+        full line
+
+        Return (week_num, week num and date range)
+        e.g, ("Week 12 2025:", "Week 12 2025: 23 - 30 Mar")
+        """
         return (NoteFile.validate_weekly_heading(h1_heading=line), line[2:])
 
     @staticmethod
