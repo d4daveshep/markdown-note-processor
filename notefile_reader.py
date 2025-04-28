@@ -27,6 +27,18 @@ class WeeklyNotes:
         self.h1_headings: list[H1Heading] = []
         self.total_lines: int = 0
 
+    def count_lines_saved(self) -> int:
+        count: int = 0
+        # count += len(self.h1_headings)
+        # count += sum(len(h1.lines) for h1 in self.h1_headings)
+        for h1 in self.h1_headings:
+            count += 1
+            count += len(h1.lines)
+            for h2 in h1.h2_headings:
+                count += 1
+                count += len(h2.lines)
+        return count
+
 
 def load_weekly_note_file(file: Path) -> WeeklyNotes:
     weekly_notes: WeeklyNotes = WeeklyNotes()
@@ -61,4 +73,5 @@ def load_weekly_note_file(file: Path) -> WeeklyNotes:
             else:
                 log.debug("line IGNORED")
                 pass
+
     return weekly_notes

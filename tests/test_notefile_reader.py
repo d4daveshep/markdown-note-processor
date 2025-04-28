@@ -46,3 +46,10 @@ def test_h2_heading():
     h2: H2Heading = H2Heading("test h2 heading")
     assert h2.name == "test h2 heading"
     assert h2.lines == []
+
+
+def test_notefile_reader_count_lines_saved():
+    week_1_file: Path = Path("tests/week_1_files/Test Week 1.md")
+    weekly_notes: WeeklyNotes = load_weekly_note_file(file=week_1_file)
+
+    assert weekly_notes.count_lines_saved() == weekly_notes.total_lines
