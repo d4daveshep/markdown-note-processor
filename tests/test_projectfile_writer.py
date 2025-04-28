@@ -1,8 +1,9 @@
-from projectfile_writer import write_project_files, write_project_file
-from md_parser import ProjectFileDetails
 from pathlib import Path
+
+from md_parser import ProjectFileDetails
+from projectfile_writer import write_project_file, write_project_files
 from split_results import SplitResults, TitleDate
-from weekly_notes import H1Heading, H2Heading, WeeklyNotes
+from weekly_notes import H2Heading, WeeklyNotes
 
 
 def test_write_project_files(week_1_notes: WeeklyNotes, temp_dir: Path):
