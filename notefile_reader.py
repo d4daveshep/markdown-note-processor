@@ -1,7 +1,12 @@
-from pathlib import Path
+import logging
 from dataclasses import dataclass, field
+from pathlib import Path
 
-from project_file_utils import read_file_to_str_list, Heading
+from project_file_utils import Heading, read_file_to_str_list
+
+logging.basicConfig(format="%(asctime)s %(message)s")
+log = logging.getLogger(__name__)
+log.setLevel(logging.DEBUG)
 
 
 @dataclass
@@ -29,13 +34,23 @@ def load_weekly_note_file(file: Path) -> WeeklyNotes:
 
     lines: list[str] = read_file_to_str_list(file)
     for line in lines:
+        log.debug(f"line={line}")
         if line.startswith(Heading.H1):
             in_h1 = True
+            in_h2 = False
             h1_heading: H1Heading = H1Heading(line)
             weekly_notes.h1_headings.append(h1_heading)
-        if line.startswith(Heading.H2):
+        elif line.startswith(Heading.H2):
             in_h2 = True
             h2_heading: H2Heading = H2Heading(line)
-            h1_heading.h2_headings.append(h2_heading)
-
+            if in_h1:
+                h1_heading.h2_headings.append(h2_heading)
+        else:
+            # not a H1 or H2 heading, so save it in teh corect place
+            if in_h2:
+                h2_heading.lines.append(line)
+            elif in_h1:
+                h1_heading.lines.append(line)
+            else:
+                pass
     return weekly_notes

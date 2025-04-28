@@ -1,18 +1,26 @@
-from notefile_reader import load_weekly_note_file, WeeklyNotes, H1Heading, H2Heading
+import logging
 from pathlib import Path
+
+from notefile_reader import H1Heading, H2Heading, WeeklyNotes, load_weekly_note_file
+
+logging.basicConfig(format="%(asctime)s %(message)s")
+log = logging.getLogger(__name__)
+log.setLevel(logging.DEBUG)
 
 
 def test_notefile_reader():
     week_1_file: Path = Path("tests/week_1_files/Test Week 1.md")
     weekly_notes: WeeklyNotes = load_weekly_note_file(file=week_1_file)
     assert len(weekly_notes.h1_headings) == 5
-    assert weekly_notes.h1_headings[0].name == "# Week 01 2025: 1 Jan - 7 Jan"
-    assert weekly_notes.h1_headings[2].name == "# Thu 02 Jan 2025"
 
     h1_heading_0: H1Heading = weekly_notes.h1_headings[0]
+    assert h1_heading_0.name == "# Week 01 2025: 1 Jan - 7 Jan"
+    assert len(h1_heading_0.lines) == 1
     assert len(h1_heading_0.h2_headings) == 1
 
     h1_heading_2: H1Heading = weekly_notes.h1_headings[2]
+    assert h1_heading_2.name == "# Thu 02 Jan 2025"
+    assert len(h1_heading_2.lines) == 1
     assert len(h1_heading_2.h2_headings) == 3
 
 
