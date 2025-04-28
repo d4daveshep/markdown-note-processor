@@ -25,6 +25,7 @@ class H1Heading:
 class WeeklyNotes:
     def __init__(self) -> None:
         self.h1_headings: list[H1Heading] = []
+        self.total_lines: int = 0
 
 
 def load_weekly_note_file(file: Path) -> WeeklyNotes:
@@ -33,24 +34,31 @@ def load_weekly_note_file(file: Path) -> WeeklyNotes:
     in_h2: bool = False
 
     lines: list[str] = read_file_to_str_list(file)
-    for line in lines:
-        log.debug(f"line={line}")
+    weekly_notes.total_lines = len(lines)
+
+    for line_num, line in enumerate(lines):
+        log.debug(f"line {line_num}: {line}")
         if line.startswith(Heading.H1):
             in_h1 = True
             in_h2 = False
             h1_heading: H1Heading = H1Heading(line)
             weekly_notes.h1_headings.append(h1_heading)
+            log.debug("H1 heading added")
         elif line.startswith(Heading.H2):
             in_h2 = True
             h2_heading: H2Heading = H2Heading(line)
             if in_h1:
                 h1_heading.h2_headings.append(h2_heading)
+                log.debug("H2 heading added")
         else:
             # not a H1 or H2 heading, so save it in teh corect place
             if in_h2:
                 h2_heading.lines.append(line)
+                log.debug("line added to H2")
             elif in_h1:
                 h1_heading.lines.append(line)
+                log.debug("line added to H1")
             else:
+                log.debug("line IGNORED")
                 pass
     return weekly_notes
