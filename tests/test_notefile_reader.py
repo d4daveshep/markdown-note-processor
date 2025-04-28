@@ -1,19 +1,11 @@
 import logging
-import pytest
-from pathlib import Path
-from weekly_notes import WeeklyNotes, H1Heading, H2Heading
-from notefile_reader import load_weekly_note_file
+
+
+from weekly_notes import H1Heading, H2Heading, WeeklyNotes
 
 logging.basicConfig(format="%(asctime)s %(message)s")
 log = logging.getLogger(__name__)
 log.setLevel(logging.DEBUG)
-
-
-@pytest.fixture
-def week_1_notes() -> WeeklyNotes:
-    week_1_file: Path = Path("tests/week_1_files/Test Week 1.md")
-    week_1_notes: WeeklyNotes = load_weekly_note_file(file=week_1_file)
-    return week_1_notes
 
 
 def test_notefile_reader(week_1_notes: WeeklyNotes):

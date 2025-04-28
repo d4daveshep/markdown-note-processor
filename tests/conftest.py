@@ -5,6 +5,8 @@ from typing import Generator
 import pytest
 
 from md_parser import NoteFile
+from notefile_reader import load_weekly_note_file
+from weekly_notes import WeeklyNotes
 
 
 @pytest.fixture
@@ -62,3 +64,16 @@ def project_file_1() -> Path:
     project_file: Path = Path("tests/week_2_files/Project 1.md")
     assert project_file.exists()
     return project_file
+
+
+@pytest.fixture
+def week_1_notes(temp_dir: Path) -> Generator[WeeklyNotes]:
+    # specify the file and the directory to work in
+    src_filepath: Path = Path("tests/week_1_files/Test Week 1.md")
+
+    # copy the weekly file to test directory
+    dst_filepath: Path = temp_dir / src_filepath.name
+    shutil.copy(src_filepath, dst_filepath)
+
+    week_1_notes: WeeklyNotes = load_weekly_note_file(file=dst_filepath)
+    yield week_1_notes
