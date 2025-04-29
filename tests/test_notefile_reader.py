@@ -12,7 +12,7 @@ def test_notefile_reader(week_1_notes: WeeklyNotes):
     assert week_1_notes.total_lines == 54
 
     h1_heading_0: H1Heading = week_1_notes.h1_headings[0]
-    assert h1_heading_0.name == "# Week 01 2025: 1 Jan - 7 Jan"
+    assert h1_heading_0.name == "# Week 01 2025: 1 - 7 Jan"
     assert len(h1_heading_0.lines) == 1
     assert len(h1_heading_0.h2_headings) == 1
 
