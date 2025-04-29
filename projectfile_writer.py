@@ -82,9 +82,9 @@ def write_project_file(
 
 
 def write_project_files(
-    weekly_notes: WeeklyNotes, projectfile_directory: Path
+    weekly_notes: WeeklyNotes, project_directory: Path
 ) -> SplitResults:
-    results: SplitResults = SplitResults(lines_processed=0)
+    results: SplitResults = SplitResults()
 
     log.debug("START")
 
@@ -103,7 +103,7 @@ def write_project_files(
             # write to the project files for "week-long" projects
             for h2_heading in h1_heading.h2_headings:
                 project_file_details: ProjectFileDetails = write_project_file(
-                    h2_heading, weekly_date_str, projectfile_directory
+                    h2_heading, weekly_date_str, project_directory
                 )
 
                 # merge the results
@@ -111,5 +111,14 @@ def write_project_files(
 
         else:
             date_str: str = NoteFile.validate_date_heading(h1_heading.name)
+            #
+            # write to the project files for "week-long" projects
+            for h2_heading in h1_heading.h2_headings:
+                project_file_details: ProjectFileDetails = write_project_file(
+                    h2_heading, date_str, project_directory
+                )
+
+                # merge the results
+                results.merge_project_file_details(project_file_details)
 
     return results
