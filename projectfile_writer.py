@@ -40,7 +40,7 @@ def write_project_file(
     project_filepath: Path = project_directory / Path(project_name + ".md")
 
     # build the title line we want to write
-    title_line: str = f"## {date_str}: {title}\n"
+    title_line: str = f"## {date_str}: {title}"
     log.debug(f"title_line = {title_line}")
 
     # if the file exists and doesn't contain the title line already, then open it
@@ -64,6 +64,9 @@ def write_project_file(
 
     # write the heading line to the file
     project_file.write(f"# {project_name}\n\n")
+
+    # write the title line
+    project_file.write(title_line + "\n")
 
     # write the lines to the file
     for line in h2_heading.lines:
