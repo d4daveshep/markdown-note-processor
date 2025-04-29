@@ -40,10 +40,10 @@ def test_write_project_file(week_1_notes: WeeklyNotes, temp_dir: Path):
         TitleDate(title="Another first entry", date_str=date_str)
         in project_file_details.lines_written
     )
+
+    # check file is as expected
     project_filepath: Path = Path(temp_dir) / Path(project_file_details.name + ".md")
     assert project_filepath.exists()
-    # check file is as expected
-    # project_file:TextIOWrapper = open(project_filepath)
     assert filecmp.cmp(Path("./tests/week_1_files/Project 2.md"), project_filepath), (
         f"{project_filepath.name} differs"
     )
