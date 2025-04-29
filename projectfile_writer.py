@@ -14,7 +14,11 @@ log.setLevel(logging.DEBUG)
 def write_project_file(
     h2_heading: H2Heading, date_str: str, projectfile_directory: Path
 ) -> ProjectFileDetails:
-    return ProjectFileDetails(name="")
+    project_name: str
+    title: str
+    project_name, title = NoteFile.split_project_name_heading(h2_heading.name)
+    project_file_details: ProjectFileDetails = ProjectFileDetails(name=project_name)
+    return project_file_details
 
 
 def write_project_files(
