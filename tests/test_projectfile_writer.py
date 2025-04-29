@@ -1,3 +1,4 @@
+import filecmp
 from pathlib import Path
 
 from md_parser import ProjectFileDetails
@@ -12,7 +13,7 @@ def test_write_project_files(week_1_notes: WeeklyNotes, temp_dir: Path):
 
 
 def test_write_project_file(week_1_notes: WeeklyNotes, temp_dir: Path):
-    date_str: str = "Thu 02 Jan 2025"
+    date_str: str = "Thu 02 Jan 2025: 1 - 7 Jan"
     h2_heading: H2Heading = H2Heading(name="## Project 3 - Starting on day 2")
 
     h2_heading.lines.append("")
@@ -22,11 +23,18 @@ def test_write_project_file(week_1_notes: WeeklyNotes, temp_dir: Path):
     project_file_details: ProjectFileDetails = write_project_file(
         h2_heading=h2_heading,
         date_str=date_str,
-        projectfile_directory=temp_dir,
+        project_directory=temp_dir,
     )
     assert project_file_details.name == "Project 3"
     assert project_file_details.created
     assert (
         TitleDate(title="Starting on day 2", date_str=date_str)
         in project_file_details.lines_written
+    )
+    project_filepath: Path = Path(temp_dir) / Path(project_file_details.name + ".md")
+    assert project_filepath.exists()
+    # check file is as expected
+    # project_file:TextIOWrapper = open(project_filepath)
+    assert filecmp.cmp(Path("./tests/week_1_files/Project 3.md"), project_filepath), (
+        f"{project_filepath.name} differs"
     )
