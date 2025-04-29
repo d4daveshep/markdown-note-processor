@@ -24,10 +24,20 @@ class SplitResults:
     )
     days: set[str] = field(default_factory=set[str])
 
-    def merge_project_file_details(
-        self, new_project_file_details: ProjectFileDetails
-    ) -> None:
-        # TODO: implement this method
+    def merge_project_file_details(self, new_details: ProjectFileDetails) -> None:
+        # find or create the project in the results
+        details: ProjectFileDetails = self.projects.get(
+            new_details.name, ProjectFileDetails(name=new_details.name)
+        )
+
+        for title_date, line_count in new_details.lines_written.items():
+            details.lines_written[title_date] = line_count
+
+        # check if we already have an entry for the title date, and add the line count from the new details
+        # for title_date,line_count in details.lines_written:
+
+        self.projects[new_details.name] = details
+
         pass
 
     def __str__(self) -> str:
