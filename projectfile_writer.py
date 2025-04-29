@@ -51,6 +51,7 @@ def write_project_file(
             log.debug(
                 f"... and already contains {title_line} so SKIPPING this whole heading"
             )
+            # FIXME: return the proper object
             return
 
     # but if the file doesn't exist open it (which creates it)
