@@ -88,10 +88,8 @@ def write_project_files(
 
     log.debug("START")
 
-    # build the cache of project_file_headings so we can detect if the weekly file
-    # has already been split
-    projectfile_headings: ProjectFileHeadings = ProjectFileHeadings(
-        directory=projectfile_directory
+    existing_project_file_headings: ProjectFileHeadings = ProjectFileHeadings(
+        directory=project_directory
     )
 
     # loop throuugh the H1 headings...
@@ -100,9 +98,16 @@ def write_project_files(
         if h1_heading_num == 0:
             NoteFile.validate_weekly_heading(h1_heading.name)
             weekly_date_str: str = h1_heading.name[2:]
+            results.week_num = weekly_date_str
 
+            # write to the project files for "week-long" projects
             for h2_heading in h1_heading.h2_headings:
-                write_project_file(h2_heading, weekly_date_str, projectfile_directory)
+                project_file_details: ProjectFileDetails = write_project_file(
+                    h2_heading, weekly_date_str, projectfile_directory
+                )
+
+                # merge the results
+                results.merge_project_file_details(project_file_details)
 
         else:
             date_str: str = NoteFile.validate_date_heading(h1_heading.name)

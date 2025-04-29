@@ -24,6 +24,11 @@ class SplitResults:
     )
     days: set[str] = field(default_factory=set[str])
 
+    def merge_project_file_details(
+        self, new_project_file_details: ProjectFileDetails
+    ) -> None:
+        pass
+
     def __str__(self) -> str:
         output = ""
         output += "\n======== Split Results ========\n"
