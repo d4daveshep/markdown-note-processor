@@ -31,10 +31,10 @@ class SplitResults:
         )
 
         for title_date, line_count in new_details.lines_written.items():
-            details.lines_written[title_date] = line_count
+            # get the existing line count if it exists (or use 0)
+            existing_line_count: int = details.lines_written.get(title_date, 0)
 
-        # check if we already have an entry for the title date, and add the line count from the new details
-        # for title_date,line_count in details.lines_written:
+            details.lines_written[title_date] = existing_line_count + line_count
 
         self.projects[new_details.name] = details
 
