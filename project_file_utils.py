@@ -1,6 +1,7 @@
-from pathlib import Path
 import logging
 from enum import StrEnum
+from pathlib import Path
+from typing import Any, Callable, Dict, Type, TypeVar, cast
 
 logging.basicConfig(format="%(asctime)s %(message)s")
 log = logging.getLogger(__name__)
@@ -30,6 +31,35 @@ def get_h2_headings(file: Path) -> set[str]:
     return {line for line in lines if line.startswith(Heading.H2)}
 
 
+_T = TypeVar("_T")
+
+
+def singleton(cls: Type[_T]) -> Type[_T]:
+    """A decorator to make a class a singleton."""
+    _instance: _T | None = None
+
+    def get_instance(*args: Any, **kwargs: Any) -> _T:
+        nonlocal _instance
+        if _instance is None:
+            _instance = cls(*args, **kwargs)
+        return _instance
+
+    return get_instance
+
+
+# # Singleton decorator
+# def singleton(cls: Type[T]) -> Callable[..., T]:
+#     instances: Dict[Type[T], T] = {}
+#
+#     def get_instance(*args: Any, **kwargs: Any) -> T:
+#         if cls not in instances:
+#             instances[cls] = cls(*args, **kwargs)
+#         return instances[cls]
+#
+#     return cast(Callable[..., T], get_instance)
+
+
+@singleton
 class ProjectFileHeadings:
     def __init__(self, directory: Path) -> None:
         self._cache: dict[str, set[str]] = {}

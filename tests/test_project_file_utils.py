@@ -45,3 +45,10 @@ def test_project_files_h2_headings_class():
         project_filename="Project 1",
         h2_heading="## No such heading",
     )
+
+
+def test_project_file_headings_class_is_a_singleton():
+    project_file_directory: Path = Path("tests/week_2_files/")
+    instance_1: ProjectFileHeadings = ProjectFileHeadings(project_file_directory)
+    instance_2: ProjectFileHeadings = ProjectFileHeadings(project_file_directory)
+    assert instance_1 is instance_2
