@@ -47,18 +47,6 @@ def singleton(cls: Type[_T]) -> Type[_T]:
     return get_instance
 
 
-# # Singleton decorator
-# def singleton(cls: Type[T]) -> Callable[..., T]:
-#     instances: Dict[Type[T], T] = {}
-#
-#     def get_instance(*args: Any, **kwargs: Any) -> T:
-#         if cls not in instances:
-#             instances[cls] = cls(*args, **kwargs)
-#         return instances[cls]
-#
-#     return cast(Callable[..., T], get_instance)
-
-
 @singleton
 class ProjectFileHeadings:
     def __init__(self, directory: Path) -> None:
