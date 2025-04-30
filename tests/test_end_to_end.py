@@ -1,10 +1,10 @@
 import filecmp
 from project_file_utils import ProjectFileHeadings
-from projectfile_writer import write_project_files
+from project_file_writer import write_project_files
 from pathlib import Path
 
-from md_parser import SplitResults
 from weekly_notes import WeeklyNotes
+from split_results import SplitResults
 
 
 def test_split_first_weekly_file(week_1_notes: WeeklyNotes, temp_dir: Path) -> None:

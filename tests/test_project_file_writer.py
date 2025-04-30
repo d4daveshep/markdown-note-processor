@@ -1,11 +1,10 @@
 import filecmp
 from pathlib import Path
 
-from md_parser import ProjectFileDetails
 from project_file_utils import ProjectFileHeadings
-from projectfile_writer import write_project_file, write_project_files
-from split_results import SplitResults, TitleDate
-from weekly_notes import H2Heading, WeeklyNotes, H1Heading
+from project_file_writer import write_project_file, write_project_files
+from split_results import ProjectFileDetails, SplitResults, TitleDate
+from weekly_notes import H1Heading, H2Heading, WeeklyNotes
 
 
 def test_write_project_files(week_1_notes: WeeklyNotes, temp_dir: Path):
