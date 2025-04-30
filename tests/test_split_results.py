@@ -5,13 +5,7 @@ from md_parser import ProjectFileDetails, SplitResults, TitleDate
 def test_create_empty_split_results() -> None:
     results: SplitResults = SplitResults()
     assert results
-
-
-def test_increment_lines_processed() -> None:
-    results: SplitResults = SplitResults()
-    assert results.lines_processed == 0
-    results.lines_processed += 1
-    assert results.lines_processed == 1
+    assert results.total_lines_written == 0
 
 
 def test_project_file_created_appended_flag() -> None:
@@ -50,6 +44,7 @@ def test_merge_new_project_file_details() -> None:
     pfd_2.lines_written[TitleDate(title="Title 2", date_str="Date 2")] = 22
 
     results.merge_project_file_details(pfd_2)
+    assert results.total_lines_written == 33
 
     # check pfd_1 is still there
     assert pfd_1.name in results.projects
@@ -84,6 +79,7 @@ def test_merge_existing_project_file_details() -> None:
     pfd_2.lines_written[TitleDate(title="Title 2", date_str="Date 2")] = 22
 
     results.merge_project_file_details(pfd_2)
+    assert results.total_lines_written == 33
 
     assert pfd_1.name in results.projects
     assert (
@@ -110,6 +106,7 @@ def test_merge_existing_project_file_and_title_date_details() -> None:
     pfd_2.lines_written[TitleDate(title="Title 1", date_str="Date 1")] = 11
 
     results.merge_project_file_details(pfd_2)
+    assert results.total_lines_written == 22
 
     assert pfd_1.name in results.projects
     assert (

@@ -16,13 +16,19 @@ class ProjectFileDetails:
 
 @dataclass
 class SplitResults:
-    lines_processed: int = 0
     week_num: str = ""
     top_heading: str = ""
     projects: dict[str, ProjectFileDetails] = field(
         default_factory=dict[str, ProjectFileDetails]
     )
     days: set[str] = field(default_factory=set[str])
+
+    @property
+    def total_lines_written(self) -> int:
+        total: int = 0
+        for details in self.projects.values():
+            total += sum(details.lines_written.values())
+        return total
 
     def merge_project_file_details(self, new_details: ProjectFileDetails) -> None:
         # find or create the project in the results
@@ -45,7 +51,7 @@ class SplitResults:
         output += "\n======== Split Results ========\n"
         output += self.top_heading
         output += "\n-------------------------------\n"
-        output += f"Processed {self.lines_processed} lines\n"
+        output += f"Total lines written = {self.total_lines_written}\n"
 
         output += "Project files written to:\n"
         for project_name, details in sorted(self.projects.items()):

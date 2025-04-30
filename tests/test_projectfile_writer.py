@@ -9,7 +9,7 @@ from weekly_notes import H2Heading, WeeklyNotes, H1Heading
 
 def test_write_project_files(week_1_notes: WeeklyNotes, temp_dir: Path):
     results: SplitResults = write_project_files(week_1_notes, temp_dir)
-    assert results.lines_processed == week_1_notes.total_lines
+    assert results.total_lines_written == 34
 
 
 def test_write_project_file(week_1_notes: WeeklyNotes, temp_dir: Path):
