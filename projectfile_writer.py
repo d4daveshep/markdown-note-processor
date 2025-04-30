@@ -47,15 +47,15 @@ def write_project_file(
     if project_filepath.exists():
         log.debug(f"{project_filepath} already EXISTS")
         project_file_details.created = False
-        if not existing_project_file_headings.contains(project_name, title_line):
-            if not dry_run:
-                project_file = open(project_filepath, "a")
 
-        else:
+        if existing_project_file_headings.contains(project_name, title_line):
             log.debug(
                 f"... and already contains {title_line} so SKIPPING this whole heading"
             )
             return project_file_details
+
+        elif not dry_run:
+            project_file = open(project_filepath, "a")
 
     # but if the file doesn't exist open it (which creates it)
     else:
