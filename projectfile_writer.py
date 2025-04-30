@@ -1,10 +1,12 @@
 import logging
+import argparse
+from typing import NamedTuple
 import re
 from datetime import datetime
 from io import TextIOWrapper
 from pathlib import Path
 
-# from md_parser import ProjectFileDetails
+from notefile_reader import load_weekly_note_file
 from project_file_utils import ProjectFileHeadings
 from split_results import SplitResults, TitleDate, ProjectFileDetails
 from weekly_notes import H2Heading, WeeklyNotes
@@ -16,6 +18,13 @@ log.setLevel(logging.DEBUG)
 
 class FormatException(Exception):
     pass
+
+
+class CommandLineArguments(NamedTuple):
+    filename: str
+    output_dir: str = ""
+    dry_run: bool = False
+    debug: bool = False
 
 
 def validate_weekly_heading(h1_heading: str) -> str:
@@ -196,3 +205,64 @@ def write_project_files(
                 results.merge_project_file_details(project_file_details)
 
     return results
+
+
+def parse_args(argv: list[str] | None = None) -> CommandLineArguments:
+    parser: argparse.ArgumentParser = argparse.ArgumentParser(
+        description="Split my weekly markdown notes into separate project files"
+    )
+    parser.add_argument("filename", help="The weekly notes file to process")
+    parser.add_argument(
+        "-o",
+        "--output_dir",
+        help="The directory to write the project files in (default=same diretory as note file)",
+    )
+    parser.add_argument(
+        "-d",
+        "--debug",
+        action="store_true",
+        help="Increase output verbosity with debug output",
+    )
+    parser.add_argument(
+        "-s",
+        "--dry-run",
+        action="store_true",
+        help="Simulate the split with a dry run that doesn't create or write any files",
+    )
+    args = parser.parse_args(argv)
+    return CommandLineArguments(
+        filename=args.filename,
+        output_dir=args.output_dir,
+        dry_run=args.dry_run,
+        debug=args.debug,
+    )
+
+
+def main() -> None:
+    """
+    This is the main entry point of the program
+    """
+    # Parse arguments
+    args: CommandLineArguments = parse_args()
+
+    note_file: Path = Path(args.filename)
+    output_dir: Path = note_file.parent
+
+    # read the note file
+    weekly_notes: WeeklyNotes = load_weekly_note_file(file=note_file)
+
+    # get the output_dir
+    if args.output_dir:
+        output_dir = Path(args.output_dir)
+
+    if args.dry_run:
+        print("** DRY RUN **")
+
+    results: SplitResults = write_project_files(
+        weekly_notes=weekly_notes, project_directory=output_dir, dry_run=args.dry_run
+    )
+    print(results)
+
+
+if __name__ == "__main__":
+    main()
