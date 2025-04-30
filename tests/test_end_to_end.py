@@ -1,4 +1,5 @@
 import filecmp
+from project_file_utils import ProjectFileHeadings
 from projectfile_writer import write_project_files
 from pathlib import Path
 
@@ -46,7 +47,10 @@ def test_split_second_weekly_file(
 
 
 def test_rerun_of_weekly_file_split(week_1_notes: WeeklyNotes, temp_dir: Path) -> None:
+    # write the project files twice but reload the cache after the first run
     write_project_files(week_1_notes, temp_dir)
+    existing_project_file_headings: ProjectFileHeadings = ProjectFileHeadings(temp_dir)
+    existing_project_file_headings.reload(temp_dir)
     write_project_files(week_1_notes, temp_dir)
 
     # check project files are created but content not duplicated on second split
