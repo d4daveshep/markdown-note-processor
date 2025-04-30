@@ -27,6 +27,8 @@ def test_project_files_h2_headings_class():
     project_file_headings: ProjectFileHeadings = ProjectFileHeadings(
         project_file_directory
     )
+    # reload the files because we have a singleton object
+    project_file_headings.read_project_files(project_file_directory)
 
     assert len(project_file_headings._cache) == 7
     assert "Project 3" in project_file_headings._cache
