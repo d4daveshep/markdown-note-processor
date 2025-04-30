@@ -13,7 +13,7 @@ log.setLevel(logging.DEBUG)
 
 
 def write_project_file(
-    h2_heading: H2Heading, date_str: str, project_directory: Path
+    h2_heading: H2Heading, date_str: str, project_directory: Path, dry_run: bool = False
 ) -> ProjectFileDetails:
     """
     Write a project file entry from the weekly note H2 heading.
@@ -48,7 +48,8 @@ def write_project_file(
         log.debug(f"{project_filepath} already EXISTS")
         project_file_details.created = False
         if not existing_project_file_headings.contains(project_name, title_line):
-            project_file = open(project_filepath, "a")
+            if not dry_run:
+                project_file = open(project_filepath, "a")
 
         else:
             log.debug(
@@ -59,30 +60,35 @@ def write_project_file(
     # but if the file doesn't exist open it (which creates it)
     else:
         log.debug(f"{project_filepath} CREATED")
-        project_file = open(project_filepath, "a")
+        if not dry_run:
+            project_file = open(project_filepath, "a")
         project_file_details.created = True
 
         # write the heading line to the file
-        project_file.write(f"# {project_name}\n\n")
+        if not dry_run:
+            project_file.write(f"# {project_name}\n\n")
 
     # write the title line
-    project_file.write(title_line + "\n")
+    if not dry_run:
+        project_file.write(title_line + "\n")
 
     # write the lines to the file
-    for line in h2_heading.lines:
-        project_file.write(line + "\n")
+    if not dry_run:
+        for line in h2_heading.lines:
+            project_file.write(line + "\n")
 
     project_file_details.lines_written[TitleDate(title, date_str)] = len(
         h2_heading.lines
     )
 
-    project_file.close()
+    if not dry_run:
+        project_file.close()
 
     return project_file_details
 
 
 def write_project_files(
-    weekly_notes: WeeklyNotes, project_directory: Path
+    weekly_notes: WeeklyNotes, project_directory: Path, dry_run: bool = False
 ) -> SplitResults:
     results: SplitResults = SplitResults()
 
@@ -99,7 +105,7 @@ def write_project_files(
             # write to the project files for "week-long" projects
             for h2_heading in h1_heading.h2_headings:
                 project_file_details: ProjectFileDetails = write_project_file(
-                    h2_heading, weekly_date_str, project_directory
+                    h2_heading, weekly_date_str, project_directory, dry_run
                 )
 
                 # merge the results
@@ -112,7 +118,7 @@ def write_project_files(
             # write to the project files for "week-long" projects
             for h2_heading in h1_heading.h2_headings:
                 project_file_details: ProjectFileDetails = write_project_file(
-                    h2_heading, date_str, project_directory
+                    h2_heading, date_str, project_directory, dry_run
                 )
 
                 # merge the results
