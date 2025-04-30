@@ -51,15 +51,17 @@ def singleton(cls: Type[_T]) -> Type[_T]:
 class ProjectFileHeadings:
     def __init__(self, directory: Path) -> None:
         self._cache: dict[str, set[str]] = {}
-        self.directory = directory
-        self.read_project_files(directory)
+        self._read_project_files(directory)
         log.debug(f"ProjectFileHeadings._cache=\n{self._cache}")
 
-    def read_project_files(self, directory: Path) -> int:
+    def _read_project_files(self, directory: Path) -> int:
         self._cache = {}
         for md_file in directory.glob("*.md"):
             self._cache[md_file.stem] = get_h2_headings(md_file)
         return len(self._cache)
+
+    def reload(self, directory: Path) -> int:
+        return self._read_project_files(directory)
 
     def contains(self, project_filename: str, h2_heading: str) -> bool:
         try:

@@ -2,12 +2,18 @@ import filecmp
 from pathlib import Path
 
 from md_parser import ProjectFileDetails
+from project_file_utils import ProjectFileHeadings
 from projectfile_writer import write_project_file, write_project_files
 from split_results import SplitResults, TitleDate
 from weekly_notes import H2Heading, WeeklyNotes, H1Heading
 
 
 def test_write_project_files(week_1_notes: WeeklyNotes, temp_dir: Path):
+    existing_project_file_headings: ProjectFileHeadings = ProjectFileHeadings(
+        directory=temp_dir
+    )
+    existing_project_file_headings.reload(temp_dir)
+
     results: SplitResults = write_project_files(week_1_notes, temp_dir)
     assert results.total_lines_written == 34
 
