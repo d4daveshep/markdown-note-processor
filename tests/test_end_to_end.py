@@ -28,22 +28,22 @@ def test_split_file_dry_run(week_1_notes: WeeklyNotes, temp_dir: Path) -> None:
         assert not Path(temp_dir / file).exists(), f"{file} was found"
 
 
-# def test_split_second_weekly_file(
-#     week_1: NoteFile, week_2: NoteFile, temp_dir: Path
-# ) -> None:
-#     week_1.split_file()
-#     results: SplitResults = week_2.split_file()
-#     assert results.lines_processed == 38
-#
-#     # check project files exist and are written as expected
-#     project_files: list[str] = [f"Project {n}.md" for n in range(0, 5)]
-#     for file in project_files:
-#         assert Path(temp_dir / file).exists(), f"{file} not found"
-#         assert filecmp.cmp(
-#             Path(f"./tests/week_2_files/{file}"), Path(temp_dir / file)
-#         ), f"{file} differs"
-#
-#
+def test_split_second_weekly_file(
+    week_1_notes: WeeklyNotes, week_2_notes: WeeklyNotes, temp_dir: Path
+) -> None:
+    write_project_files(week_1_notes, temp_dir)
+    results: SplitResults = write_project_files(week_2_notes, temp_dir)
+    assert results.total_lines_written == 24
+
+    # check project files exist and are written as expected
+    project_files: list[str] = [f"Project {n}.md" for n in range(0, 5)]
+    for file in project_files:
+        assert Path(temp_dir / file).exists(), f"{file} not found"
+        assert filecmp.cmp(
+            Path(f"./tests/week_2_files/{file}"), Path(temp_dir / file)
+        ), f"{file} differs"
+
+
 # def test_rerun_of_weekly_file_split(week_1: NoteFile, temp_dir: Path) -> None:
 #     week_1.split_file()
 #     week_1.split_file()

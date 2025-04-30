@@ -77,3 +77,16 @@ def week_1_notes(temp_dir: Path) -> Generator[WeeklyNotes]:
 
     week_1_notes: WeeklyNotes = load_weekly_note_file(file=dst_filepath)
     yield week_1_notes
+
+
+@pytest.fixture
+def week_2_notes(temp_dir: Path) -> Generator[WeeklyNotes]:
+    # specify the file and the directory to work in
+    src_filepath: Path = Path("tests/week_2_files/Test Week 2.md")
+
+    # copy the weekly file to test directory
+    dst_filepath: Path = temp_dir / src_filepath.name
+    shutil.copy(src_filepath, dst_filepath)
+
+    week_2_notes: WeeklyNotes = load_weekly_note_file(file=dst_filepath)
+    yield week_2_notes
