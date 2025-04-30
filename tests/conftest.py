@@ -24,9 +24,9 @@ def temp_dir() -> Generator[Path]:
     yield test_dir
 
     # delete all files in test directory
-    for file_path in test_dir.glob("*"):
-        if file_path.is_file():
-            file_path.unlink()
+    # for file_path in test_dir.glob("*"):
+    #     if file_path.is_file():
+    #         file_path.unlink()
 
 
 @pytest.fixture
