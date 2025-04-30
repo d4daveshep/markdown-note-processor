@@ -62,8 +62,8 @@ def write_project_file(
         project_file = open(project_filepath, "a")
         project_file_details.created = True
 
-    # write the heading line to the file
-    project_file.write(f"# {project_name}\n\n")
+        # write the heading line to the file
+        project_file.write(f"# {project_name}\n\n")
 
     # write the title line
     project_file.write(title_line + "\n")
@@ -88,13 +88,9 @@ def write_project_files(
 
     log.debug("START")
 
-    existing_project_file_headings: ProjectFileHeadings = ProjectFileHeadings(
-        directory=project_directory
-    )
-
     # loop throuugh the H1 headings...
     for h1_heading_num, h1_heading in enumerate(weekly_notes.h1_headings):
-        # get the weekly date range from the first H1 heading
+        # write the "week-long" project notes
         if h1_heading_num == 0:
             NoteFile.validate_weekly_heading(h1_heading.name)
             weekly_date_str: str = h1_heading.name[2:]
@@ -109,9 +105,10 @@ def write_project_files(
                 # merge the results
                 results.merge_project_file_details(project_file_details)
 
+        # write the project files for all daily notes
         else:
             date_str: str = NoteFile.validate_date_heading(h1_heading.name)
-            #
+
             # write to the project files for "week-long" projects
             for h2_heading in h1_heading.h2_headings:
                 project_file_details: ProjectFileDetails = write_project_file(
