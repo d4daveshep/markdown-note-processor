@@ -37,86 +37,80 @@ def test_project_lines_written() -> None:
 def test_merge_new_project_file_details() -> None:
     results: SplitResults = SplitResults()
     pfd_1: ProjectFileDetails = ProjectFileDetails(name="Project 1")
-    pfd_1.lines_written[TitleDate(title="Title 1", date_str="Date 1")] = 11
+    pfd_1.created = True
+    td_1 = TitleDate(title="Title 1", date_str="Date 1")
+    pfd_1.lines_written[td_1] = 11
     results.projects[pfd_1.name] = pfd_1
 
     pfd_2: ProjectFileDetails = ProjectFileDetails(name="Project 2")
-    pfd_2.lines_written[TitleDate(title="Title 2", date_str="Date 2")] = 22
+    td_2 = TitleDate(title="Title 2", date_str="Date 2")
+    pfd_2.lines_written[td_2] = 22
+    pfd_2.created = False
 
     results.merge_project_file_details(pfd_2)
     assert results.total_lines_written == 33
 
     # check pfd_1 is still there
     assert pfd_1.name in results.projects
-    assert (
-        TitleDate(title="Title 1", date_str="Date 1")
-        in results.projects[pfd_1.name].lines_written
-    )
+    assert td_1 in results.projects[pfd_1.name].lines_written
+    assert results.projects[pfd_1.name].created
 
     # check pfd_2 has been merged
     assert len(results.projects) == 2
     assert pfd_2.name in results.projects
-    assert (
-        TitleDate(title="Title 2", date_str="Date 2")
-        in results.projects[pfd_2.name].lines_written
-    )
+    assert td_2 in results.projects[pfd_2.name].lines_written
+    assert not results.projects[pfd_2.name].created
 
     # check pfd_1 is still there
     assert pfd_1.name in results.projects
-    assert (
-        TitleDate(title="Title 1", date_str="Date 1")
-        in results.projects[pfd_1.name].lines_written
-    )
+    assert td_1 in results.projects[pfd_1.name].lines_written
+    assert results.projects[pfd_1.name].created
 
 
 def test_merge_existing_project_file_details() -> None:
     results: SplitResults = SplitResults()
     pfd_1: ProjectFileDetails = ProjectFileDetails(name="Project 1")
-    pfd_1.lines_written[TitleDate(title="Title 1", date_str="Date 1")] = 11
+    pfd_1.created = True
+    td_1 = TitleDate(title="Title 1", date_str="Date 1")
+    pfd_1.lines_written[td_1] = 11
     results.projects[pfd_1.name] = pfd_1
 
     pfd_2: ProjectFileDetails = ProjectFileDetails(name="Project 1")
-    pfd_2.lines_written[TitleDate(title="Title 2", date_str="Date 2")] = 22
+    pfd_2.created = False
+    td_2 = TitleDate(title="Title 2", date_str="Date 2")
+    pfd_2.lines_written[td_2] = 22
 
     results.merge_project_file_details(pfd_2)
     assert results.total_lines_written == 33
 
     assert pfd_1.name in results.projects
-    assert (
-        TitleDate(title="Title 1", date_str="Date 1")
-        in results.projects[pfd_1.name].lines_written
-    )
+    assert td_1 in results.projects[pfd_1.name].lines_written
+    assert results.projects[pfd_1.name].created
 
     # check pfd_2 has been merged
     assert len(results.projects) == 1
     assert pfd_2.name in results.projects
-    assert (
-        TitleDate(title="Title 2", date_str="Date 2")
-        in results.projects[pfd_2.name].lines_written
-    )
+    assert td_2 in results.projects[pfd_2.name].lines_written
 
 
 def test_merge_existing_project_file_and_title_date_details() -> None:
     results: SplitResults = SplitResults()
     pfd_1: ProjectFileDetails = ProjectFileDetails(name="Project 1")
-    pfd_1.lines_written[TitleDate(title="Title 1", date_str="Date 1")] = 11
+    pfd_1.created = True
+    td_1 = TitleDate(title="Title 1", date_str="Date 1")
+    pfd_1.lines_written[td_1] = 11
     results.projects[pfd_1.name] = pfd_1
 
     pfd_2: ProjectFileDetails = ProjectFileDetails(name="Project 1")
-    pfd_2.lines_written[TitleDate(title="Title 1", date_str="Date 1")] = 11
+    pfd_2.created = False
+    pfd_2.lines_written[td_1] = 11
 
     results.merge_project_file_details(pfd_2)
     assert results.total_lines_written == 22
 
     assert pfd_1.name in results.projects
-    assert (
-        TitleDate(title="Title 1", date_str="Date 1")
-        in results.projects[pfd_1.name].lines_written
-    )
+    assert td_1 in results.projects[pfd_1.name].lines_written
+    assert results.projects[pfd_1.name].created
 
-    assert (
-        results.projects[pfd_1.name].lines_written[
-            TitleDate(title="Title 1", date_str="Date 1")
-        ]
-        == 22
-    )
+    assert results.projects[pfd_1.name].lines_written[td_1] == 22
+    assert results.projects[pfd_1.name].created

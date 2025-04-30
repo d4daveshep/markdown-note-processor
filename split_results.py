@@ -36,6 +36,10 @@ class SplitResults:
             new_details.name, ProjectFileDetails(name=new_details.name)
         )
 
+        # if created flag is True then don't override it with False
+        if new_details.created:
+            details.created = True
+
         for title_date, line_count in new_details.lines_written.items():
             # get the existing line count if it exists (or use 0)
             existing_line_count: int = details.lines_written.get(title_date, 0)
