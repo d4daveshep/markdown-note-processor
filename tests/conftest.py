@@ -4,7 +4,7 @@ from typing import Generator
 
 import pytest
 
-from notefile_reader import load_weekly_note_file
+from weekly_note_file_reader import load_weekly_note_file
 from weekly_notes import WeeklyNotes
 
 

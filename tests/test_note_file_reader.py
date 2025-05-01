@@ -7,7 +7,7 @@ log = logging.getLogger(__name__)
 log.setLevel(logging.DEBUG)
 
 
-def test_notefile_reader(week_1_notes: WeeklyNotes):
+def test_note_file_reader(week_1_notes: WeeklyNotes):
     assert len(week_1_notes.h1_headings) == 5
     assert week_1_notes.total_lines == 54
 
@@ -45,5 +45,5 @@ def test_h2_heading():
     assert h2.lines == []
 
 
-def test_notefile_reader_count_lines_saved(week_1_notes: WeeklyNotes):
+def test_note_file_reader_count_lines_saved(week_1_notes: WeeklyNotes):
     assert week_1_notes.count_lines_saved() == week_1_notes.total_lines

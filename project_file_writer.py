@@ -6,7 +6,7 @@ from datetime import datetime
 from io import TextIOWrapper
 from pathlib import Path
 
-from notefile_reader import load_weekly_note_file
+from weekly_note_file_reader import load_weekly_note_file
 from project_file_utils import ProjectFileHeadings
 from split_results import SplitResults, TitleDate, ProjectFileDetails
 from weekly_notes import H2Heading, WeeklyNotes
@@ -214,7 +214,7 @@ def parse_args(argv: list[str] | None = None) -> CommandLineArguments:
     parser.add_argument("filename", help="The weekly notes file to process")
     parser.add_argument(
         "-o",
-        "--output_dir",
+        "--output-dir",
         help="The directory to write the project files in (default=same diretory as note file)",
     )
     parser.add_argument(
