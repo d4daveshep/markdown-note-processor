@@ -50,11 +50,11 @@ class SplitResults:
 
         pass
 
-    def __str__(self) -> str:
+    def summary_output(self) -> str:
         output = ""
-        output += "\n======== Split Results ========\n"
+        output += "\n======== Split Results Summary ========\n"
         output += self.top_heading
-        output += "\n-------------------------------\n"
+        output += "\n---------------------------------------\n"
         output += f"Total lines written = {self.total_lines_written}\n"
 
         output += "Project files written to:\n"
@@ -64,13 +64,20 @@ class SplitResults:
                 output += "[ CREATED ]\n"
             else:
                 output += "[ exists ]\n"
-        output += "-------------------------------\n"
+        output += "---------------------------------------\n"
+        return output
 
+    def detailed_output(self) -> str:
+        output = ""
+        output += "======== Split Results Details ========\n"
         output += "\nNotes entries written:\n"
         for project_name, details in sorted(self.projects.items()):
             output += f"\nProject file: {project_name}:\n"
             for title_date, lines in details.lines_written.items():
                 output += f'On {title_date[1]}, topic "{title_date[0]}", wrote {lines} lines\n'
-        output += "-------------------------------\n"
+        output += "---------------------------------------\n"
+        return output
 
+    def __str__(self) -> str:
+        output = self.summary_output() + self.detailed_output()
         return output

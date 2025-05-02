@@ -114,3 +114,15 @@ def test_merge_existing_project_file_and_title_date_details() -> None:
 
     assert results.projects[pfd_1.name].lines_written[td_1] == 22
     assert results.projects[pfd_1.name].created
+
+
+def test_summary_output() -> None:
+    results: SplitResults = SplitResults()
+    summary: str = results.summary_output()
+    assert "Split Results Summary" in summary
+
+
+def test_detailed_output() -> None:
+    results: SplitResults = SplitResults()
+    details: str = results.detailed_output()
+    assert "Split Results Details" in details

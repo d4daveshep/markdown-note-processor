@@ -25,6 +25,7 @@ class CommandLineArguments(NamedTuple):
     output_dir: str = ""
     dry_run: bool = False
     debug: bool = False
+    verbose: bool = False
 
 
 def validate_weekly_heading(h1_heading: str) -> str:
@@ -181,6 +182,7 @@ def write_project_files(
             validate_weekly_heading(h1_heading.name)
             weekly_date_str: str = h1_heading.name[2:]
             results.week_num = weekly_date_str
+            results.top_heading = weekly_date_str
 
             # write to the project files for "week-long" projects
             for h2_heading in h1_heading.h2_headings:
@@ -229,12 +231,19 @@ def parse_args(argv: list[str] | None = None) -> CommandLineArguments:
         action="store_true",
         help="Simulate the split with a dry run that doesn't create or write any files",
     )
+    parser.add_argument(
+        "-v",
+        "--verbose",
+        action="store_true",
+        help="Add more details on the project files written",
+    )
     args = parser.parse_args(argv)
     return CommandLineArguments(
         filename=args.filename,
         output_dir=args.output_dir,
         dry_run=args.dry_run,
         debug=args.debug,
+        verbose=args.verbose,
     )
 
 
@@ -261,7 +270,9 @@ def main() -> None:
     results: SplitResults = write_project_files(
         weekly_notes=weekly_notes, project_directory=output_dir, dry_run=args.dry_run
     )
-    print(results)
+    print(results.summary_output())
+    if args.verbose:
+        print(results.detailed_output())
 
 
 if __name__ == "__main__":
