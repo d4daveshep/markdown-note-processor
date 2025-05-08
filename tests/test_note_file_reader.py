@@ -1,6 +1,6 @@
 import logging
 
-from weekly_notes import H1Heading, H2Heading, WeeklyNotes
+from weekly_note_processor.weekly_notes import H1Heading, H2Heading, WeeklyNotes
 
 logging.basicConfig(format="%(asctime)s %(message)s")
 log = logging.getLogger(__name__)

@@ -1,4 +1,4 @@
-from project_file_writer import CommandLineArguments, parse_args
+from weekly_note_processor.project_file_writer import CommandLineArguments, parse_args
 
 
 def test_dry_run_argument() -> None:

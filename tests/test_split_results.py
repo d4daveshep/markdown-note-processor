@@ -1,5 +1,5 @@
 # Testing the SplitResults class
-from split_results import ProjectFileDetails, SplitResults, TitleDate
+from weekly_note_processor.split_results import ProjectFileDetails, SplitResults, TitleDate
 
 
 def test_create_empty_split_results() -> None:

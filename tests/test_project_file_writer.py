@@ -1,10 +1,10 @@
 import filecmp
 from pathlib import Path
 
-from project_file_utils import ProjectFileHeadings
-from project_file_writer import write_project_file, write_project_files
-from split_results import ProjectFileDetails, SplitResults, TitleDate
-from weekly_notes import H1Heading, H2Heading, WeeklyNotes
+from weekly_note_processor.project_file_utils import ProjectFileHeadings
+from weekly_note_processor.project_file_writer import write_project_file, write_project_files
+from weekly_note_processor.split_results import ProjectFileDetails, SplitResults, TitleDate
+from weekly_note_processor.weekly_notes import H1Heading, H2Heading, WeeklyNotes
 
 
 def test_write_project_files(week_1_notes: WeeklyNotes, temp_dir: Path):
@@ -49,6 +49,6 @@ def test_write_project_file(week_1_notes: WeeklyNotes, temp_dir: Path):
     # check file is as expected
     project_filepath: Path = Path(temp_dir) / Path(project_file_details.name + ".md")
     assert project_filepath.exists()
-    assert filecmp.cmp(Path("./tests/week_1_files/Project 2.md"), project_filepath), (
+    assert filecmp.cmp(Path("./test_data/week_1_files/Project 2.md"), project_filepath), (
         f"{project_filepath.name} differs"
     )

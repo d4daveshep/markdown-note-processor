@@ -6,10 +6,10 @@ from datetime import datetime
 from io import TextIOWrapper
 from pathlib import Path
 
-from weekly_note_file_reader import load_weekly_note_file
-from project_file_utils import ProjectFileHeadings
-from split_results import SplitResults, TitleDate, ProjectFileDetails
-from weekly_notes import H2Heading, WeeklyNotes
+from weekly_note_processor.note_file_reader import load_note_file
+from weekly_note_processor.project_file_utils import ProjectFileHeadings
+from weekly_note_processor.split_results import SplitResults, TitleDate, ProjectFileDetails
+from weekly_note_processor.weekly_notes import H2Heading, WeeklyNotes
 
 logging.basicConfig(format="%(asctime)s %(message)s")
 log = logging.getLogger(__name__)
@@ -258,7 +258,7 @@ def main() -> None:
     output_dir: Path = note_file.parent
 
     # read the note file
-    weekly_notes: WeeklyNotes = load_weekly_note_file(file=note_file)
+    weekly_notes: WeeklyNotes = load_note_file(file=note_file)
 
     # get the output_dir
     if args.output_dir:

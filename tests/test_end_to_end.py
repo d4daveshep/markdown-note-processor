@@ -1,10 +1,10 @@
 import filecmp
-from project_file_utils import ProjectFileHeadings
-from project_file_writer import write_project_files
+from weekly_note_processor.project_file_utils import ProjectFileHeadings
+from weekly_note_processor.project_file_writer import write_project_files
 from pathlib import Path
 
-from weekly_notes import WeeklyNotes
-from split_results import SplitResults
+from weekly_note_processor.weekly_notes import WeeklyNotes
+from weekly_note_processor.split_results import SplitResults
 
 
 def test_split_first_weekly_file(week_1_notes: WeeklyNotes, temp_dir: Path) -> None:
@@ -17,7 +17,7 @@ def test_split_first_weekly_file(week_1_notes: WeeklyNotes, temp_dir: Path) -> N
     for file in project_files:
         assert Path(temp_dir / file).exists(), f"{file} not found"
         assert filecmp.cmp(
-            Path(f"./tests/week_1_files/{file}"), Path(temp_dir / file)
+            Path(f"./test_data/week_1_files/{file}"), Path(temp_dir / file)
         ), f"{file} differs"
 
 
@@ -42,7 +42,7 @@ def test_split_second_weekly_file(
     for file in project_files:
         assert Path(temp_dir / file).exists(), f"{file} not found"
         assert filecmp.cmp(
-            Path(f"./tests/week_2_files/{file}"), Path(temp_dir / file)
+            Path(f"./test_data/week_2_files/{file}"), Path(temp_dir / file)
         ), f"{file} differs"
 
 
@@ -58,5 +58,5 @@ def test_rerun_of_weekly_file_split(week_1_notes: WeeklyNotes, temp_dir: Path) -
     for file in project_files:
         assert Path(temp_dir / file).exists(), f"{file} not found"
         assert filecmp.cmp(
-            Path(f"./tests/week_1_files/{file}"), Path(temp_dir / file)
+            Path(f"./test_data/week_1_files/{file}"), Path(temp_dir / file)
         ), f"{file} differs"

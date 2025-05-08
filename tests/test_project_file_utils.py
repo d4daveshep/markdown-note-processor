@@ -1,5 +1,5 @@
 from pathlib import Path
-from project_file_utils import (
+from weekly_note_processor.project_file_utils import (
     read_file_to_str_list,
     get_h2_headings,
     ProjectFileHeadings,
@@ -23,7 +23,7 @@ def test_project_file_h2_headings(project_file_1: Path):
 
 
 def test_project_files_h2_headings_class():
-    project_file_directory: Path = Path("tests/week_2_files/")
+    project_file_directory: Path = Path("test_data/week_2_files/")
     project_file_headings: ProjectFileHeadings = ProjectFileHeadings(
         project_file_directory
     )
@@ -50,7 +50,7 @@ def test_project_files_h2_headings_class():
 
 
 def test_project_file_headings_class_is_a_singleton():
-    project_file_directory: Path = Path("tests/week_2_files/")
+    project_file_directory: Path = Path("test_data/week_2_files/")
     instance_1: ProjectFileHeadings = ProjectFileHeadings(project_file_directory)
     instance_2: ProjectFileHeadings = ProjectFileHeadings(project_file_directory)
     assert instance_1 is instance_2

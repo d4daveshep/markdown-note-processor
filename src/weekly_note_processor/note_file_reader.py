@@ -1,15 +1,15 @@
 import logging
 from pathlib import Path
 
-from project_file_utils import Heading, read_file_to_str_list
-from weekly_notes import H1Heading, H2Heading, WeeklyNotes
+from weekly_note_processor.project_file_utils import Heading, read_file_to_str_list
+from weekly_note_processor.weekly_notes import H1Heading, H2Heading, WeeklyNotes
 
 logging.basicConfig(format="%(asctime)s %(message)s")
 log = logging.getLogger(__name__)
 log.setLevel(logging.DEBUG)
 
 
-def load_weekly_note_file(file: Path) -> WeeklyNotes:
+def load_note_file(file: Path) -> WeeklyNotes:
     weekly_notes: WeeklyNotes = WeeklyNotes()
     in_h1: bool = False
     in_h2: bool = False
